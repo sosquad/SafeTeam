@@ -1,5 +1,7 @@
 <resources>
     <string name="google_client_id_token">540538117251-j5u2bhfl5oa46haqogv9h70ftp8hda70.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">374899936523912</string>
+    <string name="fb_login_protocol_scheme">fb374899936523912</string>
     <string name="app_name">SafeTeam</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

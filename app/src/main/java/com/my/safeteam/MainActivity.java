@@ -32,12 +32,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.my.safeteam.DB.User;
 
 public class MainActivity extends AppCompatActivity {
+    //GSON
+    private Gson gson = new Gson();
     //LOGED USER
-    User user;
-    View hView;
+    private User user;
+    private View hView;
     //NAVBAR INITALITATION
     public Toolbar toolbar;
     public DrawerLayout drawerLayout;
@@ -66,16 +69,20 @@ public class MainActivity extends AppCompatActivity {
     private void getinGoogleUser(){
         hView = navigationView.getHeaderView(0);
         DatabaseReference fUserReference = FirebaseDatabase.getInstance().getReference("USERS").child(getIntent().getExtras().getString("userID"));
-        fUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        fUserReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("photoUri").getValue().toString(), dataSnapshot.child("email").getValue().toString());
-                avatar = hView.findViewById(R.id.userPhotoAvatar);
-                Glide.with(MainActivity.this).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
-                displayName = hView.findViewById(R.id.userNameDisplay);
-                displayName.setText(user.getName());
-                displayEmail = hView.findViewById(R.id.userEmailDisplay);
-                displayEmail.setText(user.getEmail());
+                System.out.println(dataSnapshot.toString());
+                user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    //user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("photoUri").getValue().toString(), dataSnapshot.child("email").getValue().toString());
+                    avatar = hView.findViewById(R.id.userPhotoAvatar);
+                    Glide.with(MainActivity.this).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
+                    displayName = hView.findViewById(R.id.userNameDisplay);
+                    displayName.setText(user.getName());
+                    displayEmail = hView.findViewById(R.id.userEmailDisplay);
+                    displayEmail.setText(user.getEmail());
+                }
             }
 
             @Override

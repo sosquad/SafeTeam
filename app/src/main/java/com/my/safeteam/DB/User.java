@@ -6,12 +6,25 @@ public class User {
     private String name;
     private String photoUri;
     private String email;
+    private String tipoLogin;
+
+    public User() {
+    }
 
     public User(@NonNull String name, String photoUri, String email) {
         this.name = name;
         this.photoUri = photoUri;
         this.email = email;
     }
+
+    public String getTipoLogin() {
+        return tipoLogin;
+    }
+
+    public void setTipoLogin(String tipoLogin) {
+        this.tipoLogin = tipoLogin;
+    }
+
     public String getName() {
         return name;
     }

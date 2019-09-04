@@ -39,5 +39,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.google.firebase:firebase-database:18.0.1'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+
 
 }

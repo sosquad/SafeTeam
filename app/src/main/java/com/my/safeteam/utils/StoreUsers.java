@@ -14,28 +14,26 @@ public class StoreUsers {
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
-    public void storeUser(User user, String id) {
+    public boolean storeUser(User user, String id) {
         final User fUser = user;
         final String uId = id;
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("USERS");
-
-        ValueEventListener responseListener = new ValueEventListener() {
+        myRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(uId)) {
-                    System.out.println("Valor ya existe");
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    System.out.println("SAD THINGS HAPPEN :(");
                 } else {
-                    System.out.println("Valor aun no existe");
+                    System.out.println("HAPPINESS");
                     myRef.child(uId).setValue(fUser);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        };
-        myRef.addListenerForSingleValueEvent(responseListener);
+        });
+        return true;
     }
 }
