@@ -34,5 +34,13 @@
                 android:title="@string/menu_send" />
         </menu>
     </item>
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/cerrarSesion"
+                android:title="@string/session_end"
+                android:onClick="logOut" />
+        </menu>
+    </item>
 
 </menu>

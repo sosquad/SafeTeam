@@ -1,7 +1,18 @@
 package com.my.safeteam;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -12,16 +23,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.my.safeteam.DB.User;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     //NAVBAR INITALITATION
@@ -41,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         setupNavigation();
         getinGoogleUser();
 
@@ -49,8 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private void getinGoogleUser(){
         View hView = navigationView.getHeaderView(0);
         account = GoogleSignIn.getLastSignedInAccount(MainActivity.this);
-        User user = new User(account.getId(),account.getDisplayName(), account.getPhotoUrl(),account.getEmail());
-        System.out.println(user.toString());
+        User user = new User(account.getDisplayName(), account.getPhotoUrl(), account.getEmail());
         avatar = hView.findViewById(R.id.userPhotoAvatar);
         Glide.with(this).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
         displayName = hView.findViewById(R.id.userNameDisplay);
@@ -75,9 +85,17 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
 
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
 
-
-
+    public void logOut(MenuItem view) {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        FirebaseAuth.getInstance().signOut();
+                        goToLogin();
+                    }
+                });
     }
 
     @Override
@@ -98,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    private void goToLogin() {
+        Intent LoginView = new Intent(this, LoginActivity.class);
+        LoginView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(LoginView);
     }
 }
 
