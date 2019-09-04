@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "540538117251",
+    "firebase_url": "https://safe-team.firebaseio.com",
+    "project_id": "safe-team",
+    "storage_bucket": "safe-team.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540538117251:android:0e10a16cc7c4a8d78acfb6",
+        "android_client_info": {
+          "package_name": "com.my.safeteam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "540538117251-v497nujl3v36louijf64sovdtabmnhk3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.my.safeteam",
+            "certificate_hash": "964826cb55ae797cfc11b19d5f6a8e21fb9bb078"
+          }
+        },
+        {
+          "client_id": "540538117251-1cdjkiktgfsonr4orh8a0ic98dc0nojk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASGqD1sflQkapDp95OTww3U9MPEEbad5c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "540538117251-j5u2bhfl5oa46haqogv9h70ftp8hda70.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
