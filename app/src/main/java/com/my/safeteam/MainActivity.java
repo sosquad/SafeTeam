@@ -27,9 +27,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.my.safeteam.DB.User;
 
 public class MainActivity extends AppCompatActivity {
+    //LOGED USER
+    User user;
+    View hView;
     //NAVBAR INITALITATION
     public Toolbar toolbar;
     public DrawerLayout drawerLayout;
@@ -47,26 +55,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
         setupNavigation();
         getinGoogleUser();
-
     }
 
     private void getinGoogleUser(){
-        View hView = navigationView.getHeaderView(0);
-        account = GoogleSignIn.getLastSignedInAccount(MainActivity.this);
-        User user = new User(account.getDisplayName(), account.getPhotoUrl(), account.getEmail());
-        avatar = hView.findViewById(R.id.userPhotoAvatar);
-        Glide.with(this).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
-        displayName = hView.findViewById(R.id.userNameDisplay);
-        displayName.setText(user.getName());
-        displayEmail = hView.findViewById(R.id.userEmailDisplay);
-        displayEmail.setText(user.getEmail());
+        hView = navigationView.getHeaderView(0);
+        DatabaseReference fUserReference = FirebaseDatabase.getInstance().getReference("USERS").child(getIntent().getExtras().getString("userID"));
+        fUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("photoUri").getValue().toString(), dataSnapshot.child("email").getValue().toString());
+                avatar = hView.findViewById(R.id.userPhotoAvatar);
+                Glide.with(MainActivity.this).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
+                displayName = hView.findViewById(R.id.userNameDisplay);
+                displayName.setText(user.getName());
+                displayEmail = hView.findViewById(R.id.userEmailDisplay);
+                displayEmail.setText(user.getEmail());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     //Un cambio random para el commit

@@ -83,9 +83,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void goToMain() {
+    private void goToMain(@NonNull String id) {
         Intent MainView = new Intent(this, MainActivity.class);
         MainView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        MainView.putExtra("userID", id);
         startActivity(MainView);
     }
 
@@ -97,9 +98,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     FirebaseUser user = mAuth.getCurrentUser();
                     StoreUsers storeUsers = new StoreUsers();
-                    User currentLoginUser = new User(user.getDisplayName(), user.getPhotoUrl(), user.getEmail());
+                    User currentLoginUser = new User(user.getDisplayName(), user.getPhotoUrl().toString(), user.getEmail());
                     storeUsers.storeUser(currentLoginUser, user.getUid());
-                    goToMain();
+                    goToMain(user.getUid());
                 } else {
                     Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                 }

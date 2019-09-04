@@ -1,13 +1,13 @@
 package com.my.safeteam.DB;
 
-import android.net.Uri;
+import androidx.annotation.NonNull;
 
 public class User {
-    String name;
-    Uri photoUri;
-    String email;
+    private String name;
+    private String photoUri;
+    private String email;
 
-    public User(String name, Uri photoUri, String email) {
+    public User(@NonNull String name, String photoUri, String email) {
         this.name = name;
         this.photoUri = photoUri;
         this.email = email;
@@ -21,10 +21,10 @@ public class User {
     }
 
     public String getPhotoUri() {
-        return photoUri.toString();
+        return photoUri;
     }
 
-    public void setPhotoUri(Uri photoUri) {
+    public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
     }
 
