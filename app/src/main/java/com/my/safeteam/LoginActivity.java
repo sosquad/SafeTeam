@@ -46,10 +46,12 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     SignInButton signInButton;
     private final int RC_SIGN_IN = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         FacebookSdk.sdkInitialize(getApplicationContext());

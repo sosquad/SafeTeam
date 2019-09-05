@@ -10,10 +10,18 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,17 +36,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.my.safeteam.DB.User;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener {
     //GSON
     private Gson gson = new Gson();
     //LOGED USER
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     //GOOGLE THINGS
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
-    GoogleSignInAccount account;
     ImageView avatar;
     TextView displayName;
     TextView displayEmail;
@@ -60,6 +58,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MainActivity.this.getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        );
+
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -156,6 +166,39 @@ public class MainActivity extends AppCompatActivity {
         Intent LoginView = new Intent(this, LoginActivity.class);
         LoginView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(LoginView);
+    }
+
+    @Override
+    public void onSystemUiVisibilityChange(int i) {
+        int mUIFlag = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        getWindow().getDecorView()
+                .setSystemUiVisibility(mUIFlag);
+    }
+
+    @Override
+    protected void onResume() {
+        if (Build.VERSION.SDK_INT >= 16) {
+            getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(
+                    new View.OnSystemUiVisibilityChangeListener() {
+                        @Override
+                        public void onSystemUiVisibilityChange(int visibility) {
+                            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+
+                            } else {
+                                int mUIFlag = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                        | View.SYSTEM_UI_FLAG_LOW_PROFILE
+                                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                                getWindow().getDecorView()
+                                        .setSystemUiVisibility(mUIFlag);
+                            }
+                        }
+                    });
+        }
+
+        super.onResume();
     }
 }
 
