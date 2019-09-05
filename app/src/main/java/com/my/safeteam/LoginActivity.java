@@ -78,10 +78,14 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
+                Toast.makeText(LoginActivity.this, "Authentication Cancelada.", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onError(FacebookException error) {
+                Toast.makeText(LoginActivity.this, "Authentication Failed." + error, Toast.LENGTH_SHORT).show();
+
             }
         });
     }
