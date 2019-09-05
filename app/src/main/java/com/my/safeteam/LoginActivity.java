@@ -52,10 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-
         googleLoginHandler();
         facebookLoginHandler();
-
     }
 
     private void facebookLoginHandler() {

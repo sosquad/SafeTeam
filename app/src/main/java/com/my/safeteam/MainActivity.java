@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.my.safeteam.DB.User;
 
+
 public class MainActivity extends AppCompatActivity {
     //GSON
     private Gson gson = new Gson();
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public NavController navController;
     public NavigationView navigationView;
-
     //GOOGLE THINGS
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         fUserReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println(dataSnapshot.toString());
                 user = dataSnapshot.getValue(User.class);
                 if (user != null) {
                     //user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("photoUri").getValue().toString(), dataSnapshot.child("email").getValue().toString());
@@ -92,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-    //Un cambio random para el commit
     // Setting Up One Time Navigation
     private void setupNavigation() {
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -122,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+
     @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), drawerLayout);
@@ -140,6 +138,11 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     private void goToLogin() {
