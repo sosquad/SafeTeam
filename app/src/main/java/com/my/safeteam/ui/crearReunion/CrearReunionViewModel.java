@@ -1,17 +1,17 @@
-package com.my.safeteam.ui.gallery;
+package com.my.safeteam.ui.crearReunion;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GalleryViewModel extends ViewModel {
+public class CrearReunionViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
 
-    public GalleryViewModel() {
+    public CrearReunionViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is gallery fragment");
+        mText.setValue("This is crearReunion fragment");
 
     }
 
