@@ -37,14 +37,13 @@ import com.my.safeteam.DB.User;
 import com.my.safeteam.utils.StoreUsers;
 
 public class LoginActivity extends AppCompatActivity {
-    FacebookSdk facebookSdk;
-    AppEventsLogger appEventsLogger;
     CallbackManager callbackManager;
     LoginButton loginButton;
     GoogleSignInOptions gso;
     FirebaseAuth mAuth;
     GoogleSignInClient mGoogleSignInClient;
     SignInButton signInButton;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private final int RC_SIGN_IN = 1;
 
     @Override
@@ -54,6 +53,19 @@ public class LoginActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    goToMain(user.getUid());
+                } else {
+
+                }
+            }
+        };
+
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         googleLoginHandler();
@@ -63,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+        isLogedIn();
+
     }
 
     private void facebookLoginHandler() {
@@ -118,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
@@ -177,6 +192,28 @@ public class LoginActivity extends AppCompatActivity {
         currentLoginUser.setTipoLogin(tipoLogin);
         if (storeUsers.storeUser(currentLoginUser, user.getUid())) {
             goToMain(user.getUid());
+        }
+    }
+
+    private void isLogedIn() {
+        AccessToken alreadyLoggedIn = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = alreadyLoggedIn != null && !alreadyLoggedIn.isExpired();
+        if (isLoggedIn) {
+            handleFacebookAccessToken(alreadyLoggedIn);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 }

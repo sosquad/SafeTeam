@@ -1,13 +1,16 @@
 package com.my.safeteam.ui.crearReunion;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.SearchView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,14 +32,11 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.my.safeteam.ChooseMembers;
 import com.my.safeteam.DB.User;
 import com.my.safeteam.R;
-import com.my.safeteam.utils.UserAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,24 +44,88 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class CrearReunionFragment extends Fragment implements OnMapReadyCallback {
-    ListView userList;
-    UserAdapter adapter;
-    SearchView editsearch;
-    List<User> values = new ArrayList<>();
+
     private View root;
     private GoogleMap mMap;
     private CrearReunionViewModel crearReunionViewModel;
     private int TAG_CODE_PERMISSION_LOCATION;
+    private int CHOOSE_MEMBERS_CODE = 5;
+    private List<User> selectedUsers = new ArrayList<>();
+    LinearLayout container;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_crear_reunion, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
         textView.setText("Holi");
         //getCurrentPosition(root);
+        bottonBehavior();
         setMaps();
         setAutoComplete();
-        manageSearchView();
         return root;
+    }
+
+    private void bottonBehavior() {
+        Button btn = root.findViewById(R.id.add_to_group);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(root.getContext(), ChooseMembers.class);
+                intent.putExtra("selectedUsers", (Serializable) selectedUsers);
+                startActivityForResult(intent, CHOOSE_MEMBERS_CODE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        int index = 1;
+        if (requestCode == CHOOSE_MEMBERS_CODE) {
+            if (resultCode == 1) {
+                if (((ArrayList<User>) data.getSerializableExtra("result")).size() != 0) {
+                    ArrayList<User> incomingUsers = (ArrayList<User>) data.getSerializableExtra("result");
+                    for (User user : incomingUsers) {
+                        boolean found = true;
+                        for (User u : selectedUsers) {
+                            if (u.getuId().equals(user.getuId())) {
+                                found = false;
+                            }
+                        }
+                        if (found) {
+                            inflateSelectedUsers(user, index);
+                            index++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void inflateSelectedUsers(User user, int index) {
+        final User thumbUser = user;
+        selectedUsers.add(user);
+        LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        container = root.findViewById(R.id.casts_container);
+        int size = selectedUsers.size();
+        if (user != null) {
+            final LinearLayout clickeableColumn = (LinearLayout) inflater.inflate(R.layout.simple_user_for_horizontal_list, null);
+            clickeableColumn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickClickeableColumn(thumbUser, clickeableColumn);
+                }
+            });
+            ImageView selectedUserPhoto = clickeableColumn.findViewById(R.id.thumbnail_image);
+            TextView userName = clickeableColumn.findViewById(R.id.thumbnail_title);
+            userName.setText(user.getName());
+            Glide.with(root).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(selectedUserPhoto);
+            container.addView(clickeableColumn);
+        }
+    }
+
+    public void onClickClickeableColumn(User user, LinearLayout view) {
+        container.removeView(view);
+        selectedUsers.remove(user);
     }
 
     private void setMaps() {
@@ -115,46 +181,6 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(Santiago).title("Santiago de Chile"));
         mMap.setMinZoomPreference(10);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(Santiago));
-    }
-
-    public void manageSearchView() {
-        FirebaseDatabase.getInstance().getReference("USERS").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User user = snapshot.getValue(User.class);
-                    values.add(user);
-                }
-                adapter = new UserAdapter(root.getContext(), values);
-                userList = root.findViewById(R.id.lista_usuarios);
-                userList.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        SearchView searchView = root.findViewById(R.id.unir_a_grupo);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                System.out.println(s);
-                return false;
-            }
-        });
-
-    }
-
-    public void manageListView() {
-
     }
 
 

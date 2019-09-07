@@ -1,27 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="310dp"
     android:layout_height="86dp"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp">
 
+    <CheckBox
+        android:id="@+id/addUserToGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.252"
+        app:layout_constraintStart_toEndOf="@+id/nameuserlist"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
-        android:padding="15dp"
         android:id="@+id/imageuserlist"
-        android:layout_width="0dp"
-        android:layout_height="86dp"
+        android:layout_width="103dp"
+        android:layout_height="88dp"
         android:layout_weight="1"
         android:contentDescription="foto"
+        android:padding="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:textSize="15dp"
         android:id="@+id/nameuserlist"
-        android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:layout_width="wrap_content"
+        android:layout_width="129dp"
         android:layout_height="86dp"
         android:layout_weight="1"
-        android:text="loading..." />
-</LinearLayout>
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="loading..."
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageuserlist"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

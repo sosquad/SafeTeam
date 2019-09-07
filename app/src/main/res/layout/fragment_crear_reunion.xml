@@ -4,28 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/lista_usuarios"
-        android:layout_width="327dp"
-        android:layout_height="203dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unir_a_grupo"
-        app:layout_constraintVertical_bias="0.0" />
 
-    <SearchView
-        android:id="@+id/unir_a_grupo"
-        android:layout_width="383dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="24dp"
-        android:iconifiedByDefault="false"
-        android:queryHint="Agregar a grupo"
+    <Button
+        android:id="@+id/add_to_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Agregar a grupo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
+        app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
 
@@ -43,16 +30,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        android:layout_width="409dp"
-        android:layout_height="27dp"
-        app:layout_constraintBottom_toTopOf="@+id/mapa"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_gallery"
-        app:layout_constraintVertical_bias="0.98" />
-
-    <fragment
         android:id="@+id/mapa"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
@@ -63,6 +40,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_gallery"
         app:layout_constraintVertical_bias="0.988" />
+
+    <fragment
+        android:id="@+id/autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        android:layout_width="409dp"
+        android:layout_height="27dp"
+        app:layout_constraintBottom_toTopOf="@+id/mapa"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_gallery"
+        app:layout_constraintVertical_bias="0.98" />
+
+    <include
+        layout="@layout/horizontal_user_list"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_to_group"
+        app:layout_constraintVertical_bias="0.073" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -59,16 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MainActivity.this.getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LOW_PROFILE
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        );
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -78,8 +69,17 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         getinGoogleUser();
 
         if (Build.VERSION.SDK_INT > 16) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            MainActivity.this.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LOW_PROFILE
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            );
         }
     }
 
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
                         goToLogin();
                     }
                 });
@@ -175,30 +176,5 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                 .setSystemUiVisibility(mUIFlag);
     }
 
-    @Override
-    protected void onResume() {
-        if (Build.VERSION.SDK_INT >= 16) {
-            getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(
-                    new View.OnSystemUiVisibilityChangeListener() {
-                        @Override
-                        public void onSystemUiVisibilityChange(int visibility) {
-                            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-
-                            } else {
-                                int mUIFlag = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                        | View.SYSTEM_UI_FLAG_LOW_PROFILE
-                                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-                                getWindow().getDecorView()
-                                        .setSystemUiVisibility(mUIFlag);
-                            }
-                        }
-                    });
-        }
-
-        super.onResume();
-    }
 }
 
