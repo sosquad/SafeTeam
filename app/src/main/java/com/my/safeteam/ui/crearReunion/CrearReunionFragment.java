@@ -8,10 +8,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -124,8 +130,34 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
     }
 
     public void onClickClickeableColumn(User user, LinearLayout view) {
-        container.removeView(view);
-        selectedUsers.remove(user);
+        final LinearLayout finalView = view;
+        final User finalUser = user;
+        AnimationSet animationSet = startHideContinueIconAnimations(view);
+        animationSet.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                Toast.makeText(root.getContext(), finalUser.getName() + " removed!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                selectedUsers.remove(finalUser);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+
+            }
+        });
+        view.startAnimation(animationSet);
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        container.removeView(finalView);
+                    }
+                },
+                600);
     }
 
     private void setMaps() {
@@ -183,5 +215,24 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(Santiago));
     }
 
+    private AnimationSet startHideContinueIconAnimations(View view) {
+        final int ANIMATION_DURATION = 650;
+        final int BASE_DELAY = 30;
+
+        TranslateAnimation translationAnimation = new TranslateAnimation(0, -100, 0, 0);
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
+
+        final AnimationSet animationSet = new AnimationSet(true);
+        animationSet.addAnimation(translationAnimation);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animationSet.setFillAfter(true);
+        animationSet.setFillBefore(true);
+        animationSet.setDuration(20 * BASE_DELAY);
+
+
+        return animationSet;
+    }
 
 }

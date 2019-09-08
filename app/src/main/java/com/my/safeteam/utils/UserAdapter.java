@@ -32,6 +32,14 @@ public class UserAdapter extends BaseAdapter {
     }
 
     public void update(List<User> u) {
+        List<User> filteredList = new ArrayList<>();
+        for (User old : users) {
+            for (int index = 0; index < u.size(); index++) {
+                if (u.get(index).getuId().equals(old.getuId()) && old.isSelected()) {
+                    u.get(index).setSelected();
+                }
+            }
+        }
         users = new ArrayList<>();
         users.addAll(u);
         notifyDataSetChanged();
