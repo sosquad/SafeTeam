@@ -6,17 +6,6 @@
     android:layout_height="match_parent">
 
 
-    <Button
-        android:id="@+id/add_to_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Agregar a grupo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
-
     <TextView
         android:id="@+id/text_gallery"
         android:layout_width="match_parent"
@@ -27,6 +16,7 @@
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,13 +24,13 @@
         android:id="@+id/mapa"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="264dp"
-        android:layout_marginTop="252dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:maxHeight="211dp"
+        android:minWidth="150dp"
+        android:layout_height="150dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_gallery"
-        app:layout_constraintVertical_bias="0.988" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <fragment
         android:id="@+id/autocomplete_fragment"
@@ -52,20 +42,53 @@
         app:layout_constraintTop_toBottomOf="@+id/text_gallery"
         app:layout_constraintVertical_bias="0.98" />
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/horizontal_user_list"
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="110dp"
+        android:layout_marginBottom="50dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toTopOf="@+id/etPlannedTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_to_group" />
+        app:layout_constraintTop_toBottomOf="@+id/text_gallery"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/add_to_group"
+            android:layout_width="102dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/boton1"
+            android:backgroundTint="#03A9F4"
+            android:drawableLeft="@drawable/ic_personadd"
+            android:paddingLeft="5dp"
+            android:text="Invitar"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/horizontal_user_list"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_to_group" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etPlannedDate"
-        android:layout_width="266dp"
-        android:layout_height="43dp"
+        android:layout_width="248dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
         android:focusable="false"
         android:hint="Ingresa fecha"
@@ -73,25 +96,47 @@
         android:maxLines="1"
         app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:layout_constraintHorizontal_bias="0.196"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/etPlannedTime"
         android:layout_width="248dp"
         android:layout_height="41dp"
+        android:layout_marginBottom="40dp"
         android:clickable="true"
         android:focusable="false"
         android:hint="Ingresa hora"
         android:inputType="date"
         android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.196"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:text="Seleccione una hora:"
+        app:layout_constraintBottom_toTopOf="@+id/etPlannedTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.114"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Seleccione una fecha:"
         app:layout_constraintBottom_toTopOf="@+id/etPlannedDate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        app:layout_constraintVertical_bias="0.578" />
+        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
