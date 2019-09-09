@@ -52,15 +52,42 @@
         app:layout_constraintVertical_bias="0.98" />
 
     <include
+        android:id="@+id/include"
         layout="@layout/horizontal_user_list"
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_to_group"
-        app:layout_constraintVertical_bias="0.073" />
+        app:layout_constraintTop_toBottomOf="@+id/add_to_group" />
+
+    <EditText
+        android:id="@+id/etPlannedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Ingresa fecha"
+        android:inputType="date"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
+    <EditText
+        android:id="@+id/etPlannedTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Ingresa hora"
+        android:inputType="date"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@+id/etPlannedDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.my.safeteam.ui.crearReunion;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -41,6 +45,8 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.my.safeteam.ChooseMembers;
 import com.my.safeteam.DB.User;
 import com.my.safeteam.R;
+import com.my.safeteam.dialog.DataPickerFragment;
+import com.my.safeteam.dialog.TimePickerFragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,15 +59,31 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
 
     private View root;
     private GoogleMap mMap;
-    private CrearReunionViewModel crearReunionViewModel;
     private int TAG_CODE_PERMISSION_LOCATION;
     private int CHOOSE_MEMBERS_CODE = 5;
     private List<User> selectedUsers = new ArrayList<>();
-    LinearLayout container;
+    private EditText etPlannedDate;
+    private EditText etPlannedTime;
+    private LinearLayout container;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_crear_reunion, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
+        etPlannedDate = root.findViewById(R.id.etPlannedDate);
+        etPlannedDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog();
+            }
+        });
+
+        etPlannedTime = root.findViewById(R.id.etPlannedTime);
+        etPlannedTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimePickerDialog(etPlannedTime);
+            }
+        });
         textView.setText("Holi");
         //getCurrentPosition(root);
         bottonBehavior();
@@ -235,4 +257,23 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
         return animationSet;
     }
 
+    private void showDatePickerDialog() {
+        DataPickerFragment newFragment = DataPickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because January is zero
+                final String selectedDate = day + " / " + (month + 1) + " / " + year;
+
+                etPlannedDate.setText(selectedDate);
+            }
+        });
+
+        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
+    public void showTimePickerDialog(EditText v) {
+        DialogFragment newFragment = TimePickerFragment.newInstance(v);
+        // Mostrar el datePicker
+        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
 }
