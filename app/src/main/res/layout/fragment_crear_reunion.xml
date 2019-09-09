@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,10 +10,10 @@
         android:id="@+id/add_to_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="36dp"
         android:text="Agregar a grupo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
 
@@ -63,8 +64,8 @@
 
     <EditText
         android:id="@+id/etPlannedDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="266dp"
+        android:layout_height="43dp"
         android:clickable="true"
         android:focusable="false"
         android:hint="Ingresa fecha"
@@ -72,13 +73,14 @@
         android:maxLines="1"
         app:layout_constraintBottom_toTopOf="@+id/autocomplete_fragment"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
     <EditText
         android:id="@+id/etPlannedTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="248dp"
+        android:layout_height="41dp"
         android:clickable="true"
         android:focusable="false"
         android:hint="Ingresa hora"
@@ -86,8 +88,10 @@
         android:maxLines="1"
         app:layout_constraintBottom_toTopOf="@+id/etPlannedDate"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintVertical_bias="0.578" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
