@@ -73,8 +73,8 @@ public class User implements Serializable {
         return isSelected;
     }
 
-    public void setSelected() {
-        isSelected = !isSelected;
+    public void setSelected(boolean select) {
+        isSelected = select;
     }
 
     public int getId() {

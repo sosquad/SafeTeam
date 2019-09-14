@@ -9,11 +9,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -47,6 +44,7 @@ import com.my.safeteam.DB.User;
 import com.my.safeteam.R;
 import com.my.safeteam.dialog.DataPickerFragment;
 import com.my.safeteam.dialog.TimePickerFragment;
+import com.my.safeteam.utils.Animaciones;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,6 +55,7 @@ import java.util.Objects;
 
 public class CrearReunionFragment extends Fragment implements OnMapReadyCallback {
 
+    private Animaciones anim = new Animaciones();
     private View root;
     private GoogleMap mMap;
     private int TAG_CODE_PERMISSION_LOCATION;
@@ -84,7 +83,7 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
                 showTimePickerDialog(etPlannedTime);
             }
         });
-        textView.setText("Holi");
+        textView.setText("Creador de reuniones");
         //getCurrentPosition(root);
         bottonBehavior();
         setMaps();
@@ -154,7 +153,7 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
     public void onClickClickeableColumn(User user, LinearLayout view) {
         final LinearLayout finalView = view;
         final User finalUser = user;
-        AnimationSet animationSet = startHideContinueIconAnimations(view);
+        AnimationSet animationSet = anim.slideFadeAnimation(view, 600, 0, -100, 0, 0, 1.0f, 0.0f);
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -168,8 +167,6 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
-
             }
         });
         view.startAnimation(animationSet);
@@ -235,26 +232,6 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(Santiago).title("Santiago de Chile"));
         mMap.setMinZoomPreference(10);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(Santiago));
-    }
-
-    private AnimationSet startHideContinueIconAnimations(View view) {
-        final int ANIMATION_DURATION = 650;
-        final int BASE_DELAY = 30;
-
-        TranslateAnimation translationAnimation = new TranslateAnimation(0, -100, 0, 0);
-
-        AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
-
-        final AnimationSet animationSet = new AnimationSet(true);
-        animationSet.addAnimation(translationAnimation);
-        animationSet.addAnimation(alphaAnimation);
-        animationSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        animationSet.setFillAfter(true);
-        animationSet.setFillBefore(true);
-        animationSet.setDuration(20 * BASE_DELAY);
-
-
-        return animationSet;
     }
 
     private void showDatePickerDialog() {

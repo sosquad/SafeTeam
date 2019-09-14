@@ -91,7 +91,7 @@ public class ChooseMembers extends AppCompatActivity {
             for (User user : selectedUsers) {
                 for (int i = 0; i < values.size(); i++) {
                     if (user.getuId().equals(values.get(i).getuId())) {
-                        values.get(i).setSelected();
+                        values.get(i).setSelected(values.get(i).isSelected());
                         values.remove(i);
                     }
                 }
@@ -99,13 +99,10 @@ public class ChooseMembers extends AppCompatActivity {
         }
 
         userList = findViewById(R.id.lista_usuarios);
-        adapter = new UserAdapter(getApplicationContext(), values);
+        adapter = new UserAdapter(getApplicationContext(), values, true);
         userList.setAdapter(adapter);
     }
 
-    public void manageListView() {
-
-    }
 
     private void searchByValue(String s) {
         final String searchText = s;
