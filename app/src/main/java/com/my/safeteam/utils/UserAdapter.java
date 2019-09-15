@@ -90,7 +90,7 @@ public class UserAdapter extends BaseAdapter {
         viewHolder.checkBox.setTag(i);
         viewHolder.name.setText(users.get(i).getName());
         viewHolder.checkBox.setChecked(users.get(i).isSelected());
-        Glide.with(view).load(users.get(i).getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(viewHolder.avatar);
+        Glide.with(view.getContext().getApplicationContext()).load(users.get(i).getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(viewHolder.avatar);
         return view;
     }
 }

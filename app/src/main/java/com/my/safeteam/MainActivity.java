@@ -68,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         setupNavigation();
         getinGoogleUser();
 
-        if (Build.VERSION.SDK_INT > 16) {
+        if (Build.VERSION.SDK_INT > 26) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             MainActivity.this.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                 if (user != null) {
                     //user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("photoUri").getValue().toString(), dataSnapshot.child("email").getValue().toString());
                     avatar = hView.findViewById(R.id.userPhotoAvatar);
-                    Glide.with(MainActivity.this).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
+                    Glide.with(getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
                     displayName = hView.findViewById(R.id.userNameDisplay);
                     displayName.setText(user.getName());
                     displayEmail = hView.findViewById(R.id.userEmailDisplay);
@@ -113,9 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         drawerLayout = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         navigationView = findViewById(R.id.navigationView);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);

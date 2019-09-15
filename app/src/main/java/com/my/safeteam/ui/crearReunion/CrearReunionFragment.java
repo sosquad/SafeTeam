@@ -145,7 +145,7 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
             ImageView selectedUserPhoto = clickeableColumn.findViewById(R.id.thumbnail_image);
             TextView userName = clickeableColumn.findViewById(R.id.thumbnail_title);
             userName.setText(user.getName());
-            Glide.with(root).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(selectedUserPhoto);
+            Glide.with(getContext().getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(selectedUserPhoto);
             container.addView(clickeableColumn);
         }
     }
