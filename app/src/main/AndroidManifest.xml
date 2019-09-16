@@ -31,6 +31,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".utils.SearchLayout"
+            android:theme="@style/AppTheme.popUpAddGroup" />
+
+        <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -62,8 +66,11 @@
             android:value="@string/facebook_app_id" />
     </application>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACTION_IMAGE_CAPTURE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
 
 </manifest>
