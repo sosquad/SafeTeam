@@ -47,7 +47,7 @@ public class GroupDetail extends Fragment {
         Glide.with(getContext().getApplicationContext()).load(grupo.getAvatar()).into(groupdetailavatar);
         created_at.setText("Creado en : " + getDate());
         groupname.setText(grupo.getNombre());
-        grouporganization.setText(grupo.getContexto());
+        grouporganization.setText("Organización : " + grupo.getContexto());
         if (grupo.getLider() != null) {
             groupleader.setText("Lider : " + grupo.getLider().getName() + " | " + grupo.getLider().getEmail());
         } else {

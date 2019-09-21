@@ -63,11 +63,13 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
     private List<User> selectedUsers = new ArrayList<>();
     private EditText etPlannedDate;
     private EditText etPlannedTime;
+    private EditText motivoReu;
     private LinearLayout container;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_crear_reunion, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
+        motivoReu = root.findViewById(R.id.motivo_reunion);
         etPlannedDate = root.findViewById(R.id.etPlannedDate);
         etPlannedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +83,24 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 showTimePickerDialog(etPlannedTime);
+            }
+        });
+        root.findViewById(R.id.crear_grupo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (motivoReu.getText().toString().length() < 3) {
+                    Toast.makeText(root.getContext(), "Debe ingresar un motivo para la reunion!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (etPlannedDate.getText().toString().equals("")) {
+                        Toast.makeText(root.getContext(), "Debe ingresar una fecha!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (etPlannedTime.getText().toString().equals("")) {
+                            Toast.makeText(root.getContext(), "Debe ingresar una fecha!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            crearReu();
+                        }
+                    }
+                }
             }
         });
         textView.setText("Creador de reuniones");
@@ -252,5 +272,9 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
         DialogFragment newFragment = TimePickerFragment.newInstance(v);
         // Mostrar el datePicker
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
+    public void crearReu() {
+
     }
 }

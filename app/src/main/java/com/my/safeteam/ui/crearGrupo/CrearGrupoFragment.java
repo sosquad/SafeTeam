@@ -102,56 +102,26 @@ public class CrearGrupoFragment extends Fragment {
         crearGrupo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User leader = lu.getUser();
-                List<BasicUser> BasicUser = new ArrayList<>();
-                BasicUser lider = new BasicUser(leader.getuId(), leader.getName(), leader.getPhotoUri(), leader.getEmail(), 3);
-                for (User user : selectedList) {
-                    BasicUser.add(new BasicUser(user.getuId(), user.getName(), user.getPhotoUri(), user.getEmail(), 1));
-                }
-                Grupo newGroup = new Grupo(agregarNombre.getText().toString(), agregarOrganizacion.getText().toString(), BasicUser, lider, getCurrentTimestamp());
-                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("USERS/" + lu.getUser().getuId() + "/GRUPOS");
-                final String uniqueKey = ref.push().getKey();
-                ref.child(uniqueKey).setValue(newGroup);
-                mStorageRef = FirebaseStorage.getInstance().getReference("USERS/" + lu.getUser().getuId() + "/" + uniqueKey + "/AVATAR");
-                if (path != null) {
-                    mStorageRef.child("avatar.jpg")
-                            .putBytes(path)
-                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            progressBar.setProgress(0);
-                                            progressBar.setVisibility(View.INVISIBLE);
-                                        }
-                                    }, 1000);
-                                    Toast.makeText(root.getContext(), "Grupo creado con exito!", Toast.LENGTH_SHORT).show();
-                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            ref.child(uniqueKey).child("avatar").setValue(uri.toString());
-                                        }
-                                    });
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(root.getContext(), "Hubo un error al guardar la imagen", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                                    progressBar.setVisibility(View.VISIBLE);
-                                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                                    progressBar.setProgress((int) progress);
-                                }
-                            });
+                if (agregarNombre.getText().toString().equals("")) {
+                    Toast.makeText(root.getContext(), "Debes agregar un nombre al grupo!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(root.getContext(), "Selecciona una imagen!", Toast.LENGTH_SHORT).show();
+                    if (agregarOrganizacion.getText().toString().equals("")) {
+                        new AlertDialog.Builder(root.getContext())
+                                .setIcon(R.drawable.ic_sms_failed)
+                                .setTitle("Nombre organización")
+                                .setMessage("¿Desea continuar sin ingresar un nombre a su organización?")
+                                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        crearGrupo();
+                                    }
+
+                                })
+                                .setNegativeButton("No", null)
+                                .show();
+                    } else {
+                        crearGrupo();
+                    }
                 }
             }
         });
@@ -373,4 +343,57 @@ public class CrearGrupoFragment extends Fragment {
         return System.currentTimeMillis();
     }
 
+    public void crearGrupo() {
+        User leader = lu.getUser();
+        List<BasicUser> BasicUser = new ArrayList<>();
+        BasicUser lider = new BasicUser(leader.getuId(), leader.getName(), leader.getPhotoUri(), leader.getEmail(), 3);
+        for (User user : selectedList) {
+            BasicUser.add(new BasicUser(user.getuId(), user.getName(), user.getPhotoUri(), user.getEmail(), 1));
+        }
+        Grupo newGroup = new Grupo(agregarNombre.getText().toString(), agregarOrganizacion.getText().toString(), BasicUser, lider, getCurrentTimestamp());
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("USERS/" + lu.getUser().getuId() + "/GRUPOS");
+        final String uniqueKey = ref.push().getKey();
+        ref.child(uniqueKey).setValue(newGroup);
+        mStorageRef = FirebaseStorage.getInstance().getReference("USERS/" + lu.getUser().getuId() + "/" + uniqueKey + "/AVATAR");
+        if (path != null) {
+            mStorageRef.child("avatar.jpg")
+                    .putBytes(path)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setProgress(0);
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                }
+                            }, 1000);
+                            Toast.makeText(root.getContext(), "Grupo creado con exito!", Toast.LENGTH_SHORT).show();
+                            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    ref.child(uniqueKey).child("avatar").setValue(uri.toString());
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(root.getContext(), "Hubo un error al guardar la imagen", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressBar.setProgress((int) progress);
+                        }
+                    });
+        } else {
+            ref.child(uniqueKey).child("avatar").setValue("https://firebasestorage.googleapis.com/v0/b/safe-team.appspot.com/o/default%2Fdefault.jpg?alt=media&token=1fea854c-a96d-46eb-b4e0-eac2eca3874a");
+        }
+    }
 }
