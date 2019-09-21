@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/nav_send"
-        android:name="com.my.safeteam.ui.send.SendFragment"
+        android:name="com.my.safeteam.ui.send.GroupDetail"
         android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+        tools:layout="@layout/fragment_group_detail" />
 </navigation>

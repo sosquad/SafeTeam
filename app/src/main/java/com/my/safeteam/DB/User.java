@@ -3,6 +3,7 @@ package com.my.safeteam.DB;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class User implements Serializable {
     private int id;
@@ -11,7 +12,9 @@ public class User implements Serializable {
     private String photoUri;
     private String email;
     private String tipoLogin;
-    private boolean isSelected = false;
+    private boolean isSelected;
+    private List<Grupo> gruposPropios;
+    private List<String> gruposExternos;
 
     public User() {
     }
@@ -27,6 +30,33 @@ public class User implements Serializable {
         this.name = name;
         this.photoUri = photoUri;
         this.email = email;
+    }
+
+    public User(@NonNull String uId, String name, String photoUri, String email) {
+        this.uId = uId;
+        this.name = name;
+        this.photoUri = photoUri;
+        this.email = email;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Grupo> getGruposPropios() {
+        return gruposPropios;
+    }
+
+    public void setGruposPropios(List<Grupo> gruposPropios) {
+        this.gruposPropios = gruposPropios;
+    }
+
+    public List<String> getGruposExternos() {
+        return gruposExternos;
+    }
+
+    public void setGruposExternos(List<String> gruposExternos) {
+        this.gruposExternos = gruposExternos;
     }
 
     public String getTipoLogin() {

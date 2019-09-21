@@ -38,11 +38,12 @@ public class SearchLayout extends AppCompatActivity {
         listView = findViewById(R.id.lista_de_busqueda);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
+        adapter = new SearchListAdapter(getApplicationContext(), dinamicList);
 
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout(width, height / 2);
+        getWindow().setLayout(width, (int) (height * 0.23f));
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.TOP;
         params.x = 0;
@@ -62,7 +63,7 @@ public class SearchLayout extends AppCompatActivity {
             public boolean onQueryTextChange(String s) {
                 if (s.equals("")) {
                     dinamicList.clear();
-                    adapter = new SearchListAdapter(getApplicationContext(), dinamicList, true);
+                    adapter = new SearchListAdapter(getApplicationContext(), dinamicList);
                     listView.setAdapter(adapter);
                 } else {
                     Query query = FirebaseDatabase.getInstance().getReference("USERS")
@@ -74,20 +75,22 @@ public class SearchLayout extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             dinamicList.clear();
+                            adapter.notifyDataSetChanged();
                             if (dataSnapshot.exists()) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                                     User user = data.getValue(User.class);
                                     System.out.println(user);
                                     if (user.getName() != null) {
                                         user.setuId(data.getKey());
-                                        addWithoutRepeat(user);
+                                        dinamicList.add(user);
+                                        adapter.notifyDataSetChanged();
                                     }
                                 }
-                                adapter = new SearchListAdapter(getApplicationContext(), dinamicList, true);
                                 listView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                                listView.requestLayout();
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -95,8 +98,6 @@ public class SearchLayout extends AppCompatActivity {
                     });
 
                 }
-
-
                 return false;
             }
         });
@@ -104,8 +105,8 @@ public class SearchLayout extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.notifyDataSetChanged();
                 listView.requestLayout();
-
                 User user = (User) parent.getItemAtPosition(position);
                 Intent intent = new Intent();
                 intent.putExtra("selectedUser", user);
@@ -113,17 +114,5 @@ public class SearchLayout extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    private void addWithoutRepeat(User user) {
-        boolean found = false;
-        for (User inlist : dinamicList) {
-            if (inlist.equals(user)) {
-                found = true;
-            }
-        }
-        if (!found) {
-            dinamicList.add(user);
-        }
     }
 }

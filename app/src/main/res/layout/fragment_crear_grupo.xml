@@ -27,21 +27,29 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imagen_grupo_container"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
-        <Button
-            android:id="@+id/agregar_imagen_grupo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_menu_camera" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imagen_grupo_container"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/group_default"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="1px" />
+
+            <Button
+                android:id="@+id/agregar_imagen_grupo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_add_a_photo"
+                android:backgroundTint="@color/quantum_amber900" />
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/nombre_grupo"
@@ -102,7 +110,7 @@
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_gravity="right"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/boton1"
             android:backgroundTint="#03A9F4"
             android:drawableLeft="@drawable/ic_personadd"
@@ -110,7 +118,7 @@
             android:textColor="#FFFFFF" />
 
         <TextView
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -124,7 +132,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="64dp"
 
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="55dp"
         android:overScrollMode="ifContentScrolls"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -136,9 +144,22 @@
             android:id="@+id/personas_grupo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+
+        </LinearLayout>
     </ScrollView>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        app:layout_constraintTop_toBottomOf="@id/scroll_users"
+        app:layout_constraintBottom_toTopOf="@id/crear_grupo"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
     <Button
         android:id="@+id/crear_grupo"
         android:layout_width="match_parent"

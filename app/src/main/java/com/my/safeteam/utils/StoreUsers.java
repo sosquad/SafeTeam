@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.my.safeteam.DB.User;
+import com.my.safeteam.globals.LogedUser;
 
 public class StoreUsers {
 
@@ -17,13 +18,13 @@ public class StoreUsers {
     public boolean storeUser(User user, String id) {
         final User fUser = user;
         final String uId = id;
+        final LogedUser logedUser = LogedUser.getInstance();
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("USERS");
         myRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    System.out.println("SAD THINGS HAPPEN :(");
                 } else {
                     System.out.println("HAPPINESS");
                     myRef.child(uId).setValue(fUser);
@@ -34,6 +35,7 @@ public class StoreUsers {
 
             }
         });
+        logedUser.setUser(new User(uId, fUser.getName(), fUser.getPhotoUri(), fUser.getEmail()));
         return true;
     }
 }

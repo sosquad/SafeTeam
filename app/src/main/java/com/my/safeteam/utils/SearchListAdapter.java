@@ -12,35 +12,16 @@ import com.bumptech.glide.request.RequestOptions;
 import com.my.safeteam.DB.User;
 import com.my.safeteam.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchListAdapter extends BaseAdapter {
     private Context context;
     private List<User> users;
-    private List<User> staticUsers;
-    private boolean isStatic;
 
-    public SearchListAdapter(Context context, List<User> users, boolean isStatic) {
+    public SearchListAdapter(Context context, List<User> users) {
         this.context = context;
         this.users = users;
-        this.isStatic = isStatic;
-        if (isStatic) {
-            staticUsers = users;
-        }
     }
-
-    public boolean isChecked(int i) {
-        return users.get(i).isSelected();
-    }
-
-    public void update(List<User> u) {
-        List<User> filteredList = new ArrayList<>();
-        users = new ArrayList<>();
-        users.addAll(u);
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getCount() {
         return users.size();

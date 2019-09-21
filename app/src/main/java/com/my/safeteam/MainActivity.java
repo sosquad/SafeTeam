@@ -39,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.my.safeteam.DB.User;
+import com.my.safeteam.globals.LogedUser;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener {
@@ -58,11 +59,12 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     ImageView avatar;
     TextView displayName;
     TextView displayEmail;
+    LogedUser lu = LogedUser.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        lu.setCurrentUserUid(getIntent().getExtras().getString("userID"));
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -102,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                     displayName.setText(user.getName());
                     displayEmail = hView.findViewById(R.id.userEmailDisplay);
                     displayEmail.setText(user.getEmail());
+
+                    user.setuId(dataSnapshot.getKey());
+                    lu.setUser(user);
                 }
             }
 

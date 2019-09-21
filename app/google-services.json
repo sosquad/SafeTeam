@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "540538117251-gcbaps76khlbvqhcq8vg705a2hmts3hr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.my.safeteam",
+            "certificate_hash": "cb4e2336d8496a283ecc38ef49abf226d41f488c"
+          }
+        },
+        {
+          "client_id": "540538117251-6kmptrjafijnmrc78bepqgl5r31kl3pr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.my.safeteam",
+            "certificate_hash": "795b5dae2c4448735e8ed4fa27dd2fdf83a75c8b"
+          }
+        },
+        {
           "client_id": "540538117251-v497nujl3v36louijf64sovdtabmnhk3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -23,7 +39,7 @@
           }
         },
         {
-          "client_id": "540538117251-1cdjkiktgfsonr4orh8a0ic98dc0nojk.apps.googleusercontent.com",
+          "client_id": "540538117251-j5u2bhfl5oa46haqogv9h70ftp8hda70.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
