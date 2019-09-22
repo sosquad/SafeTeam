@@ -7,13 +7,15 @@ public class Reunion {
     String fecha;
     long fechaEnMilis;
     String hora;
+    Ubicacion ubicacion;
     List<BasicUser> convocados;
 
-    public Reunion(String motivo, String fecha, long fechaEnMilis, String hora, List<BasicUser> convocados) {
+    public Reunion(String motivo, String fecha, long fechaEnMilis, String hora, Ubicacion ubicacion, List<BasicUser> convocados) {
         this.motivo = motivo;
         this.fecha = fecha;
         this.fechaEnMilis = fechaEnMilis;
         this.hora = hora;
+        this.ubicacion = ubicacion;
         this.convocados = convocados;
     }
 
@@ -50,6 +52,14 @@ public class Reunion {
 
     public void setHora(String hora) {
         this.hora = hora;
+    }
+
+    public Ubicacion getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
     }
 
     public List<BasicUser> getConvocados() {

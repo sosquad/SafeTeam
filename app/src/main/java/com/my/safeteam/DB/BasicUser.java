@@ -10,6 +10,13 @@ public class BasicUser {
     public BasicUser() {
     }
 
+    public BasicUser(String uId, String name, String photoUri, String email) {
+        this.uId = uId;
+        this.name = name;
+        this.photoUri = photoUri;
+        this.email = email;
+    }
+
     public BasicUser(String uId, String name, String photoUri, String email, int estado) {
         this.uId = uId;
         this.name = name;

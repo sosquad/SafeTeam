@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners android:radius="@dimen/menu_item_size" />
+    <size
+        android:width="@dimen/menu_item_size"
+        android:height="@dimen/menu_item_size" />
+    <stroke
+        android:dashGap="10px"
+        android:dashWidth="10px"
+        android:width="1dp"
+        android:color="@color/quantum_black_100" />
+    <solid android:color="#FF0000" />
+
+</shape>

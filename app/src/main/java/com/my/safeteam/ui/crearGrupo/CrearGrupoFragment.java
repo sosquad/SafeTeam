@@ -41,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.my.safeteam.DB.BasicUser;
 import com.my.safeteam.DB.Grupo;
+import com.my.safeteam.DB.InvitacionGrupo;
 import com.my.safeteam.DB.User;
 import com.my.safeteam.R;
 import com.my.safeteam.globals.LogedUser;
@@ -72,6 +73,7 @@ public class CrearGrupoFragment extends Fragment {
     private StorageReference mStorageRef;
     private Uri contentURI;
     private ProgressBar progressBar;
+    List<BasicUser> BasicUser;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -345,7 +347,7 @@ public class CrearGrupoFragment extends Fragment {
 
     public void crearGrupo() {
         User leader = lu.getUser();
-        List<BasicUser> BasicUser = new ArrayList<>();
+        BasicUser = new ArrayList<>();
         BasicUser lider = new BasicUser(leader.getuId(), leader.getName(), leader.getPhotoUri(), leader.getEmail(), 3);
         for (User user : selectedList) {
             BasicUser.add(new BasicUser(user.getuId(), user.getName(), user.getPhotoUri(), user.getEmail(), 1));
@@ -374,6 +376,7 @@ public class CrearGrupoFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     ref.child(uniqueKey).child("avatar").setValue(uri.toString());
+                                    sendInvitation(uniqueKey);
                                 }
                             });
                         }
@@ -394,6 +397,14 @@ public class CrearGrupoFragment extends Fragment {
                     });
         } else {
             ref.child(uniqueKey).child("avatar").setValue("https://firebasestorage.googleapis.com/v0/b/safe-team.appspot.com/o/default%2Fdefault.jpg?alt=media&token=1fea854c-a96d-46eb-b4e0-eac2eca3874a");
+        }
+    }
+
+    public void sendInvitation(String uniqueKey) {
+        for (BasicUser u : BasicUser) {
+            InvitacionGrupo ig = new InvitacionGrupo(uniqueKey, lu.getUser().getuId(), false, false, getCurrentTimestamp());
+            FirebaseDatabase.getInstance().getReference("USERS/" + u.getuId() + "/INVITACIONES/GRUPO/" + uniqueKey)
+                    .setValue(ig);
         }
     }
 }

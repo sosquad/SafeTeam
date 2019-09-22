@@ -6,16 +6,32 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+        <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:windowDisablePreview">true</item>
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">5.0dp</item>
+        <item name="android:popupBackground">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_send</item>
+        <item name="android:tint">#fff</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:icon">@drawable/ic_menu_send</item>
+    </style>
 
     <style name="AppTheme.popUpAddGroup">
         <item name="android:windowIsFloating">true</item>

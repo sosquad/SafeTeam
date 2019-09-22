@@ -48,6 +48,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             minutos = "0" + i1;
         }
 
-        this.editText.setText(horas + " : " + minutos);
+        this.editText.setText(horas + ":" + minutos + ":00");
     }
 }

@@ -112,9 +112,9 @@ public class HomeFragment extends Fragment {
             hour = Math.floor(elapsed_time / 60);
             if (hour / 24 >= 1) {
                 days = Math.floor(hour / 24);
-                return "Creado hace " + (int) (days) + " dias.";
+                return "Creado hace " + (int) (days) + " dias y " + Math.floor(hour % 24) + " horas.";
             } else {
-                return "Creado hace " + (int) (hour) + " horas.";
+                return "Creado hace " + (int) (hour) + " horas y " + Math.floor((elapsed_time % 60)) + " minutos.";
             }
         } else {
             return "Creado hace " + (elapsed_time) + " minutos.";

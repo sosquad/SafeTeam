@@ -1,5 +1,6 @@
 package com.my.safeteam;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -10,8 +11,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,8 +41,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.my.safeteam.DB.InvitacionGrupo;
 import com.my.safeteam.DB.User;
 import com.my.safeteam.globals.LogedUser;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnSystemUiVisibilityChangeListener {
@@ -60,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     TextView displayName;
     TextView displayEmail;
     LogedUser lu = LogedUser.getInstance();
+    FrameLayout redCircle;
+    TextView countTextView;
+    List<InvitacionGrupo> invitaciones = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +97,10 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             );
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+
     }
 
     private void getinGoogleUser(){
@@ -158,16 +172,70 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             super.onBackPressed();
         }
     }
+
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        final MenuItem alertMenuItem = menu.findItem(R.id.notifications);
+        FrameLayout rootView = (FrameLayout) alertMenuItem.getActionView();
+        redCircle = rootView.findViewById(R.id.view_alert_red_circle);
+        countTextView = rootView.findViewById(R.id.view_alert_count_textview);
+        lookForNotifications();
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(alertMenuItem);
+            }
+        });
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void lookForNotifications() {
+
+        FirebaseDatabase.getInstance().getReference("USERS/" + lu.getCurrentUserUid() + "/INVITACIONES/GRUPO")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                InvitacionGrupo invite = data.getValue(InvitacionGrupo.class);
+                                addInvite(invite);
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.notifications:
+                Intent seeNotifications = new Intent(this, NotificationView.class);
+                seeNotifications.putExtra("invitaciones", (Serializable) invitaciones);
+                startActivity(seeNotifications);
+                return true;
+            case R.id.item1:
+                Toast.makeText(this, "Holi desde item1", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
     }
 
     private void goToLogin() {
@@ -190,6 +258,30 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    public void addInvite(InvitacionGrupo invite) {
+        boolean encontrado = false;
+        for (InvitacionGrupo current : invitaciones) {
+            if (current.getIDGrupo().equals(invite.getIDGrupo())) {
+                encontrado = true;
+            }
+        }
+        if (!encontrado) {
+            invitaciones.add(invite);
+            actualizarCounter();
+        }
+    }
+
+    private void actualizarCounter() {
+        int notificationCounter = 0;
+        for (InvitacionGrupo current : invitaciones) {
+            if (!current.isVisto()) {
+                notificationCounter++;
+            }
+        }
+        countTextView.setText(String.valueOf(notificationCounter));
+        redCircle.setVisibility(View.VISIBLE);
     }
 }
 

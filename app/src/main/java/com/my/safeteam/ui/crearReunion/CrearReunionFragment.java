@@ -40,6 +40,9 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.my.safeteam.ChooseMembers;
+import com.my.safeteam.DB.BasicUser;
+import com.my.safeteam.DB.Reunion;
+import com.my.safeteam.DB.Ubicacion;
 import com.my.safeteam.DB.User;
 import com.my.safeteam.R;
 import com.my.safeteam.dialog.DataPickerFragment;
@@ -47,8 +50,10 @@ import com.my.safeteam.dialog.TimePickerFragment;
 import com.my.safeteam.utils.Animaciones;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -65,8 +70,16 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
     private EditText etPlannedTime;
     private EditText motivoReu;
     private LinearLayout container;
+    private Ubicacion location;
+    private Reunion reunion;
+    private String groupTarget;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (getArguments() != null) {
+            groupTarget = getArguments().getString("groupTarget");
+        }
+
         root = inflater.inflate(R.layout.fragment_crear_reunion, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
         motivoReu = root.findViewById(R.id.motivo_reunion);
@@ -85,19 +98,23 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
                 showTimePickerDialog(etPlannedTime);
             }
         });
-        root.findViewById(R.id.crear_grupo).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.crear_reunion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (motivoReu.getText().toString().length() < 3) {
-                    Toast.makeText(root.getContext(), "Debe ingresar un motivo para la reunion!", Toast.LENGTH_SHORT).show();
+                if (location == null) {
+                    Toast.makeText(root.getContext(), "Debe agregar una ubicación para la reunion!", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (etPlannedDate.getText().toString().equals("")) {
-                        Toast.makeText(root.getContext(), "Debe ingresar una fecha!", Toast.LENGTH_SHORT).show();
+                    if (motivoReu.getText().toString().length() < 3) {
+                        Toast.makeText(root.getContext(), "Debe ingresar un motivo para la reunion!", Toast.LENGTH_SHORT).show();
                     } else {
-                        if (etPlannedTime.getText().toString().equals("")) {
+                        if (etPlannedDate.getText().toString().equals("")) {
                             Toast.makeText(root.getContext(), "Debe ingresar una fecha!", Toast.LENGTH_SHORT).show();
                         } else {
-                            crearReu();
+                            if (etPlannedTime.getText().toString().equals("")) {
+                                Toast.makeText(root.getContext(), "Debe ingresar una fecha!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                crearReu();
+                            }
                         }
                     }
                 }
@@ -221,6 +238,7 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(ubicacion).title(place.getName()).title(place.getName()));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ubicacion, 15.0f));
+                location = new Ubicacion(place.getLatLng().latitude, place.getLatLng().longitude, place.getName());
             }
 
             @Override
@@ -259,7 +277,7 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 // +1 because January is zero
-                final String selectedDate = day + " / " + (month + 1) + " / " + year;
+                final String selectedDate = day + "/" + (month + 1) + "/" + year;
 
                 etPlannedDate.setText(selectedDate);
             }
@@ -275,6 +293,33 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
     }
 
     public void crearReu() {
+        String motivo = motivoReu.getText().toString();
+        String date = etPlannedDate.getText().toString();
+        String hour = etPlannedTime.getText().toString();
+        long fechaEnMilis = getMilisecondsFromDate(date, hour);
 
+        if (selectedUsers.size() > 0 && fechaEnMilis != 0) {
+            reunion = new Reunion(motivo, date, fechaEnMilis, hour, location, getBasicUserFromUsers());
+        }
+    }
+
+    public long getMilisecondsFromDate(String date, String hour) {
+        String myDateString = date + " " + hour;
+        SimpleDateFormat simple = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        try {
+            Date mydate = simple.parse(myDateString);
+            return mydate.getTime();
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    public List<BasicUser> getBasicUserFromUsers() {
+        List<BasicUser> basics = new ArrayList<>();
+        for (User user : selectedUsers) {
+            basics.add(new BasicUser(user.getuId(), user.getName(), user.getPhotoUri(), user.getEmail()));
+        }
+        return basics;
     }
 }
