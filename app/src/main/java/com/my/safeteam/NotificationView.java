@@ -96,9 +96,9 @@ public class NotificationView extends AppCompatActivity {
             hour = Math.floor(elapsed_time / 60);
             if (hour / 24 >= 1) {
                 days = Math.floor(hour / 24);
-                return "Hace " + (int) (days) + " dias y " + Math.floor(hour % 24) + " horas.";
+                return "Hace " + (int) (days) + " dias y " + (int) Math.floor(hour % 24) + " horas.";
             } else {
-                return "Hace " + (int) (hour) + " horas y " + Math.floor((elapsed_time % 60)) + " minutos.";
+                return "Hace " + (int) (hour) + " horas y " + (int) Math.floor((elapsed_time % 60)) + " minutos.";
             }
         } else {
             return "Hace " + (elapsed_time) + " minutos.";
