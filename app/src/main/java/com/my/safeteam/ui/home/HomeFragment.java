@@ -90,7 +90,7 @@ public class HomeFragment extends Fragment {
                 groupName = groupRow.findViewById(R.id.group_name);
                 groupOrganitation = groupRow.findViewById(R.id.group_organitation);
                 time_elapsed = groupRow.findViewById(R.id.creado_hace);
-                Glide.with(getContext().getApplicationContext()).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
+                Glide.with(root.getContext()).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
                 groupName.setText("Grupo : " + grupo.getNombre());
                 groupOrganitation.setText("Organizacion : " + grupo.getContexto());
                 System.out.println(grupo.getCreated_at());
