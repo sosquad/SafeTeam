@@ -2,11 +2,13 @@ package com.my.safeteam.ui.send;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,7 @@ public class GroupDetail extends Fragment {
     private ImageView groupdetailavatar;
     private TextView groupname, grouporganization, groupleader, created_at;
     private LinearLayout userinvitedcontainer;
+    private RelativeLayout avatar_container;
     private View root;
     Grupo grupo;
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -42,17 +45,14 @@ public class GroupDetail extends Fragment {
         groupdetailavatar = root.findViewById(R.id.group_detail_avatar);
         groupname = root.findViewById(R.id.nombre_grupo);
         grouporganization = root.findViewById(R.id.nombre_organizacion);
-        groupleader = root.findViewById(R.id.name_leader);
         created_at = root.findViewById(R.id.created_at);
+        avatar_container = root.findViewById(R.id.avatar_group_container);
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        avatar_container.getLayoutParams().height = (int) (display.getHeight() * 0.5);
         Glide.with(getContext().getApplicationContext()).load(grupo.getAvatar()).into(groupdetailavatar);
         created_at.setText("Creado en : " + getDate());
         groupname.setText(grupo.getNombre());
         grouporganization.setText("Organización : " + grupo.getContexto());
-        if (grupo.getLider() != null) {
-            groupleader.setText("Lider : " + grupo.getLider().getName() + " | " + grupo.getLider().getEmail());
-        } else {
-            groupleader.setVisibility(View.INVISIBLE);
-        }
         LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (BasicUser user : grupo.getUsuariosEnGrupo()) {
             final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);

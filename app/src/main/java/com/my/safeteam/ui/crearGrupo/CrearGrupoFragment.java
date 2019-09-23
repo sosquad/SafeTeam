@@ -26,6 +26,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -159,7 +161,6 @@ public class CrearGrupoFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (data != null) {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
@@ -315,6 +316,8 @@ public class CrearGrupoFragment extends Fragment {
                                 public void onSuccess(Uri uri) {
                                     ref.child(uniqueKey).child("avatar").setValue(uri.toString());
                                     sendInvitation(uniqueKey);
+                                    NavController navController = Navigation.findNavController(root);
+                                    navController.navigate(R.id.nav_home);
                                 }
                             });
                         }
