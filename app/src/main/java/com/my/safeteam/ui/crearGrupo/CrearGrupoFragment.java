@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +45,9 @@ import com.my.safeteam.R;
 import com.my.safeteam.globals.LogedUser;
 import com.my.safeteam.utils.Animaciones;
 import com.my.safeteam.utils.SearchLayout;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,13 +61,9 @@ public class CrearGrupoFragment extends Fragment {
     private Button agregarAlGrupo, crearGrupo;
     private EditText agregarNombre, agregarOrganizacion;
     private List<User> selectedList = new ArrayList<>();
-    private final int CAMERA = 0;
-    private final int GALLERY = 1;
-    private final int RESULT_CANCELED = 2;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private final int SEARCH_USERS = 3;
     private LinearLayout container;
-    private byte[] path;
     private StorageReference mStorageRef;
     private Uri contentURI;
     private ProgressBar progressBar;
@@ -156,75 +150,26 @@ public class CrearGrupoFragment extends Fragment {
         startActivityForResult(searchLayout, SEARCH_USERS);
     }
 
-    private void showPictureDialog() {
-        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(root.getContext());
-        pictureDialog.setTitle("Selecciona una acción");
-        String[] pictureDialogItems = {
-                "Buscar en galeria",
-                "Tomar una foto"};
-        pictureDialog.setItems(pictureDialogItems,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                choosePhotoFromGallary();
-                                break;
-                            case 1:
-                                takePhotoFromCamera();
-                                break;
-                        }
-                    }
-                });
-        pictureDialog.show();
-    }
-
     private void takePhotoFromCamera() {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, CAMERA);
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(getContext(), this);
     }
 
-    private void choosePhotoFromGallary() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        startActivityForResult(galleryIntent, GALLERY);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == this.RESULT_CANCELED) {
-            return;
-        }
-        if (requestCode == GALLERY) {
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (data != null) {
-                contentURI = data.getData();
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(root.getContext().getContentResolver(), contentURI);
-                    path = saveImage(bitmap);
-                    Toast.makeText(root.getContext(), "Imagen Guardada!", Toast.LENGTH_SHORT).show();
-                    imagenGrupoContainer.setImageBitmap(bitmap);
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode != CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    contentURI = result.getUri();
+                    imagenGrupoContainer.setImageURI(contentURI);
                     imagenGrupoContainer.setVisibility(View.VISIBLE);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(root.getContext(), "Hubo un error! " + e, Toast.LENGTH_SHORT).show();
+                } else {
+                    Exception error = result.getError();
                 }
-            }
-
-        } else if (requestCode == CAMERA) {
-            try {
-                if (data != null) {
-                    Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                    path = saveImage(thumbnail);
-                    imagenGrupoContainer.setImageBitmap(thumbnail);
-                    imagenGrupoContainer.setVisibility(View.VISIBLE);
-                    Toast.makeText(root.getContext(), "Imagen Guardada!", Toast.LENGTH_SHORT).show();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(root.getContext(), "Foto cancelada! ", Toast.LENGTH_SHORT).show();
             }
         }
         if (requestCode == SEARCH_USERS) {
@@ -237,13 +182,6 @@ public class CrearGrupoFragment extends Fragment {
             }
         }
     }
-
-    public byte[] saveImage(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
-    }
-
 
     public void inflateSelectedUsers(User user) {
         final User thumbUser = user;
@@ -322,7 +260,7 @@ public class CrearGrupoFragment extends Fragment {
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         } else {
-            showPictureDialog();
+            takePhotoFromCamera();
         }
     }
 
@@ -331,7 +269,7 @@ public class CrearGrupoFragment extends Fragment {
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                showPictureDialog();
+                takePhotoFromCamera();
             } else {
                 // Permission Denied
                 Toast.makeText(root.getContext(), "Permiso denegado", Toast.LENGTH_SHORT).show();
@@ -357,9 +295,9 @@ public class CrearGrupoFragment extends Fragment {
         final String uniqueKey = ref.push().getKey();
         ref.child(uniqueKey).setValue(newGroup);
         mStorageRef = FirebaseStorage.getInstance().getReference("USERS/" + lu.getUser().getuId() + "/" + uniqueKey + "/AVATAR");
-        if (path != null) {
+        if (contentURI != null) {
             mStorageRef.child("avatar.jpg")
-                    .putBytes(path)
+                    .putFile(contentURI)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

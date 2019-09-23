@@ -226,7 +226,11 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             case R.id.notifications:
                 Intent seeNotifications = new Intent(this, NotificationView.class);
                 seeNotifications.putExtra("invitaciones", (Serializable) invitaciones);
-                startActivity(seeNotifications);
+                if (invitaciones.size() > 0) {
+                    startActivity(seeNotifications);
+                } else {
+                    Toast.makeText(this, "No tienes notificaciones!", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             case R.id.item1:
                 Toast.makeText(this, "Holi desde item1", Toast.LENGTH_SHORT).show();

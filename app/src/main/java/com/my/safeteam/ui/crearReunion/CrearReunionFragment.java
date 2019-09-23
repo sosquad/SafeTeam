@@ -322,4 +322,6 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
         }
         return basics;
     }
+
+
 }
