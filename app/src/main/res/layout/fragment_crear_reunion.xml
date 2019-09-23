@@ -43,24 +43,12 @@
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
+
         <LinearLayout
             android:id="@+id/nested_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal">
-
-            <TextView
-                android:id="@+id/text_gallery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/add_to_group"
@@ -77,9 +65,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
 
+            <TextView
+                android:id="@+id/text_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
         </LinearLayout>
-
 
         <include
             android:id="@+id/include"
@@ -110,10 +110,12 @@
         <EditText
             android:id="@+id/motivo_reunion"
             android:layout_width="248dp"
+            android:background="@drawable/ic_textboxradius"
             android:layout_height="41dp"
             android:layout_marginBottom="10dp"
             android:focusable="true"
             android:hint="Motivo de la reunion"
+            android:textAlignment="center"
             android:inputType="text"
             android:maxLines="1" />
 
@@ -136,6 +138,8 @@
             android:clickable="true"
             android:focusable="false"
             android:hint="Ingresa fecha"
+            android:textAlignment="center"
+            android:background="@drawable/ic_textboxradius"
             android:inputType="date"
             android:maxLines="1" />
 
@@ -151,8 +155,10 @@
             android:layout_width="248dp"
             android:layout_height="41dp"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/ic_textboxradius"
             android:clickable="true"
             android:focusable="false"
+            android:textAlignment="center"
             android:hint="Ingresa hora"
             android:inputType="date"
             android:maxLines="1" />

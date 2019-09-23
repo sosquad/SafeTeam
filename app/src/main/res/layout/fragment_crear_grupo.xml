@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
+
+
+
     <LinearLayout
         android:id="@+id/fixed_content"
         android:layout_width="match_parent"
@@ -53,12 +58,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+
         <EditText
             android:id="@+id/agregar_nombre_grupo"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
+            android:textSize="15sp"
+            android:background="@drawable/ic_textboxradius"
             android:hint="Nombre del grupo"
             android:textAlignment="center" />
 
@@ -76,11 +84,13 @@
         <EditText
             android:id="@+id/agregar_nombre_organizacion"
             android:layout_width="250dp"
-            android:layout_height="57dp"
+            android:layout_height="55dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
+            android:textSize="15sp"
             android:hint="Nombre de la organizacion"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:background="@drawable/ic_textboxradius"/>
     </LinearLayout>
 
     <LinearLayout
