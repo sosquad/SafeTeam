@@ -43,11 +43,11 @@ public class SearchLayout extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout(width, (int) (height * 0.23f));
+        getWindow().setLayout(width, (height));
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.TOP;
         params.x = 0;
-        params.y = -20;
+        params.y = 10;
         params.alpha = 0.8f;
         getWindow().setAttributes(params);
         //selectedUsers = (ArrayList<User>) getIntent().getExtras().get("selectedUsers");
