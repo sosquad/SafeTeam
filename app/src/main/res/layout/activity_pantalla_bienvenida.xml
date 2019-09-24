@@ -6,4 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".PantallaBienvenida">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="annc.json"
+        app:lottie_imageAssetsFolder="assets"
+        app:lottie_loop="true"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+    </com.airbnb.lottie.LottieAnimationView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
