@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -69,15 +71,18 @@ public class CrearGrupoFragment extends Fragment {
     private StorageReference mStorageRef;
     private Uri contentURI;
     private ProgressBar progressBar;
+    ScrollView containerCrearGrupo;
     List<BasicUser> BasicUser;
+    LottieAnimationView lottieAnimationView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_crear_grupo, container, false);
-
         inflateLeader(lu.getUser());
         Button buscarImagen = root.findViewById(R.id.agregar_imagen_grupo);
+        containerCrearGrupo = root.findViewById(R.id.content_crear_grupo);
         imagenGrupoContainer = root.findViewById(R.id.imagen_grupo_container);
+        lottieAnimationView = root.findViewById(R.id.animation_view);
         buscarImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,7 +204,6 @@ public class CrearGrupoFragment extends Fragment {
             ImageView selectedUserPhoto = clickeableColumn.findViewById(R.id.member_avatar_selected);
             TextView userName = clickeableColumn.findViewById(R.id.member_name_selected);
             TextView userEmail = clickeableColumn.findViewById(R.id.member_email_selected);
-
             userName.setText(thumbUser.getName());
             userEmail.setText(thumbUser.getEmail());
             Glide.with(getContext().getApplicationContext()).load(thumbUser.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(selectedUserPhoto);
@@ -226,7 +230,7 @@ public class CrearGrupoFragment extends Fragment {
     public void onClickClickeableColumn(User user, LinearLayout view) {
         final LinearLayout finalView = view;
         final User finalUser = user;
-        AnimationSet animationSet = anim.slideFadeAnimation(view, 600, 0, -100, 0, 0, 1.0f, 0.0f);
+        AnimationSet animationSet = anim.slideFadeAnimation(600, 0, 0, 0, 0, 1.0f, 0.0f);
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -316,8 +320,38 @@ public class CrearGrupoFragment extends Fragment {
                                 public void onSuccess(Uri uri) {
                                     ref.child(uniqueKey).child("avatar").setValue(uri.toString());
                                     sendInvitation(uniqueKey);
-                                    NavController navController = Navigation.findNavController(root);
-                                    navController.navigate(R.id.nav_home);
+                                    AnimationSet animationSet = anim.slideFadeAnimation(600, 0, 0, 0, 0, 1.0f, 0.0f);
+                                    animationSet.setAnimationListener(new Animation.AnimationListener() {
+                                        @Override
+                                        public void onAnimationStart(Animation animation) {
+
+                                        }
+
+                                        @Override
+                                        public void onAnimationEnd(Animation animation) {
+                                            containerCrearGrupo.setVisibility(View.GONE);
+                                            crearGrupo.setVisibility(View.GONE);
+                                            progressBar.setVisibility(View.GONE);
+                                            lottieAnimationView.setVisibility(View.VISIBLE);
+                                            lottieAnimationView.playAnimation();
+                                        }
+
+                                        @Override
+                                        public void onAnimationRepeat(Animation animation) {
+
+                                        }
+                                    });
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            NavController navController = Navigation.findNavController(root);
+                                            navController.navigate(R.id.nav_home);
+                                        }
+                                    }, 2600);
+                                    containerCrearGrupo.setAnimation(animationSet);
+                                    crearGrupo.setAnimation(animationSet);
+                                    progressBar.setAnimation(animationSet);
                                 }
                             });
                         }

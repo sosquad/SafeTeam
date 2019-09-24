@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.my.safeteam.DB.Grupo;
 import com.my.safeteam.R;
 import com.my.safeteam.globals.LogedUser;
+import com.my.safeteam.utils.Animaciones;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment {
     View root;
+    Animaciones anim = new Animaciones();
     DatabaseReference dR;
     ImageView groupAvatar;
     TextView groupName;
@@ -44,6 +47,9 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_home, container, false);
+        AnimationSet animationSet = anim.slideFadeAnimation(1000, 0, 0, 0, 0, 0.0f, 1.0f);
+        root.setAnimation(animationSet);
+
         groupContainer = root.findViewById(R.id.group_container);
         LogedUser lu = LogedUser.getInstance();
         grupos.clear();

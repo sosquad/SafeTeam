@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/content_crear_grupo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="40dp">
@@ -173,4 +174,17 @@
         android:layout_height="40dp"
         android:text="Crear Grupo"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/animation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:lottie_imageAssetsFolder="assets"
+        app:lottie_fileName="8878-done.json"
+        app:lottie_loop="false"
+        android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

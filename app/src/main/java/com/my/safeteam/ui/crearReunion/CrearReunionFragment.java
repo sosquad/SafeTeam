@@ -190,7 +190,7 @@ public class CrearReunionFragment extends Fragment implements OnMapReadyCallback
     public void onClickClickeableColumn(User user, LinearLayout view) {
         final LinearLayout finalView = view;
         final User finalUser = user;
-        AnimationSet animationSet = anim.slideFadeAnimation(view, 600, 0, -100, 0, 0, 1.0f, 0.0f);
+        AnimationSet animationSet = anim.slideFadeAnimation(600, 0, -100, 0, 0, 1.0f, 0.0f);
         animationSet.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
