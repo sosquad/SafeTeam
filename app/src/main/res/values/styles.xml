@@ -49,6 +49,6 @@
     </style>
     
     <style name="TemaPantallaBienvenida" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/pantallabienvenida</item>
+        <item name="android:windowBackground">@color/quantum_lightblue50</item>
     </style>
 </resources>
