@@ -148,9 +148,9 @@
             </ScrollView>
 
             <ImageView
+                android:id="@+id/if_theres_no_meet"
                 android:layout_width="200dp"
                 android:layout_height="140dp"
-                android:src="@drawable/drawable_background"
                 android:scaleType="center"
                 android:layout_gravity="center_horizontal" />
 

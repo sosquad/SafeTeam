@@ -53,6 +53,7 @@ public class GroupDetail extends Fragment {
     }
 
     private void settingDetails() {
+        settingEnviroment(grupo.getLider().getuId().equals(lu.getCurrentUserUid()));
         settingFAB();
         groupdetailavatar = root.findViewById(R.id.group_detail_avatar);
         groupname = root.findViewById(R.id.nombre_grupo);
@@ -98,8 +99,6 @@ public class GroupDetail extends Fragment {
                 }
             }
         }
-
-
     }
 
     private void addLeaderToList(LayoutInflater inflater, BasicUser lider) {
@@ -111,6 +110,16 @@ public class GroupDetail extends Fragment {
         invitedUserName.setText(lider.getName());
         invitedUserEmail.setText("Lider");
         userinvitedcontainer.addView(userInvited);
+    }
+
+    private void settingEnviroment(boolean isLeaderOrNot) {
+        ImageView theresNoMeet = root.findViewById(R.id.if_theres_no_meet);
+
+        if (isLeaderOrNot) {
+            theresNoMeet.setImageDrawable(getResources().getDrawable(R.drawable.agregar_reu));
+        } else {
+            theresNoMeet.setImageDrawable(getResources().getDrawable(R.drawable.no_hay_reu));
+        }
     }
 
     private void settingFAB() {
