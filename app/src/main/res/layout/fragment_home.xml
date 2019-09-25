@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/quantum_bluegrey50">
-    <LinearLayout
-        android:id="@+id/group_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:id="@+id/scroll_current_groups"
         android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginBottom="20dp"
-        android:paddingBottom="20dp" />
-</ScrollView>
+        android:layout_height="match_parent"
+        android:background="@color/quantum_bluegrey50"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/group_container"
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:paddingBottom="20dp" />
+
+    </ScrollView>
+
+    <com.airbnb.lottie.LottieAnimationView
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_imageAssetsFolder="assets"
+        app:lottie_fileName="main-loader.json"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true" />
+</RelativeLayout>
+

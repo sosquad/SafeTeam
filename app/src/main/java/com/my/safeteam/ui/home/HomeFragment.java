@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -96,15 +98,23 @@ public class HomeFragment extends Fragment {
                 groupName = groupRow.findViewById(R.id.group_name);
                 groupOrganitation = groupRow.findViewById(R.id.group_organitation);
                 time_elapsed = groupRow.findViewById(R.id.creado_hace);
-                Glide.with(root.getContext()).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
+                Glide.with(root.getContext().getApplicationContext()).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
                 groupName.setText("Grupo : " + grupo.getNombre());
                 groupOrganitation.setText("Organizacion : " + grupo.getContexto());
                 System.out.println(grupo.getCreated_at());
                 time_elapsed.setText(getDate(grupo.getCreated_at()));
                 groupContainer.addView(groupRow);
             }
+            ScrollView container_scroll = root.findViewById(R.id.scroll_current_groups);
+            LottieAnimationView lottieAnimationView = root.findViewById(R.id.loading_view);
+            lottieAnimationView.setVisibility(View.GONE);
+            container_scroll.setVisibility(View.VISIBLE);
 
-
+        } else {
+            ScrollView container_scroll = root.findViewById(R.id.scroll_current_groups);
+            LottieAnimationView lottieAnimationView = root.findViewById(R.id.loading_view);
+            lottieAnimationView.setVisibility(View.GONE);
+            container_scroll.setVisibility(View.VISIBLE);
         }
 
     }

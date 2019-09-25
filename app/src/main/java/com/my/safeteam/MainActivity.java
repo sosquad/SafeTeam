@@ -76,16 +76,13 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lu.setCurrentUserUid(getIntent().getExtras().getString("userID"));
-
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        setupNavigation();
         getinGoogleUser();
 
         if (Build.VERSION.SDK_INT > 26) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             MainActivity.this.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -104,23 +101,15 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     }
 
     private void getinGoogleUser(){
-        hView = navigationView.getHeaderView(0);
         DatabaseReference fUserReference = FirebaseDatabase.getInstance().getReference("USERS").child(getIntent().getExtras().getString("userID"));
-        fUserReference.addValueEventListener(new ValueEventListener() {
+        fUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 if (user != null) {
-                    //user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("photoUri").getValue().toString(), dataSnapshot.child("email").getValue().toString());
-                    avatar = hView.findViewById(R.id.userPhotoAvatar);
-                    Glide.with(getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
-                    displayName = hView.findViewById(R.id.userNameDisplay);
-                    displayName.setText(user.getName());
-                    displayEmail = hView.findViewById(R.id.userEmailDisplay);
-                    displayEmail.setText(user.getEmail());
-
                     user.setuId(dataSnapshot.getKey());
                     lu.setUser(user);
+                    setupNavigation(user);
                 }
             }
 
@@ -132,14 +121,24 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
 
     }
     // Setting Up One Time Navigation
-    private void setupNavigation() {
+    private void setupNavigation(User user) {
         drawerLayout = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         navigationView = findViewById(R.id.navigationView);
-
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        hView = navigationView.getHeaderView(0);
+        avatar = hView.findViewById(R.id.userPhotoAvatar);
+        Glide.with(getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(avatar);
+        displayName = hView.findViewById(R.id.userNameDisplay);
+        displayName.setText(user.getName());
+        displayEmail = hView.findViewById(R.id.userEmailDisplay);
+        displayEmail.setText(user.getEmail());
+        if (Build.VERSION.SDK_INT > 26) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
 

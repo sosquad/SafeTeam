@@ -1,177 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-
-
-
-    <fragment
-        android:id="@+id/mapa"
-        class="com.google.android.gms.maps.SupportMapFragment"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:maxHeight="211dp"
-        app:layout_constraintBottom_toTopOf="@id/crear_reunion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment" />
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/mapa"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:maxHeight="211dp"
+            app:layout_constraintBottom_toTopOf="@id/crear_reunion"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment" />
 
 
-    <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        android:layout_width="match_parent"
-        android:layout_height="27dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/set_day" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:gravity="bottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
-
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="27dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/set_day" />
 
         <LinearLayout
-            android:id="@+id/nested_linear"
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
+            android:layout_height="160dp"
+            android:gravity="bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical"
+            tools:ignore="MissingConstraints">
 
-            <Button
-                android:id="@+id/add_to_group"
-                android:layout_width="100px"
-                android:layout_height="100px"
-                android:layout_gravity="right"
-                android:background="@drawable/boton1"
-                android:backgroundTint="#03A9F4"
-                android:drawableLeft="@drawable/ic_personadd"
-                android:paddingLeft="5dp"
-                android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.05"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
 
-            <TextView
-                android:id="@+id/text_gallery"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/nested_linear"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/add_to_group"
+                    android:layout_width="100px"
+                    android:layout_height="100px"
+                    android:layout_gravity="right"
+                    android:background="@drawable/boton1"
+                    android:backgroundTint="#03A9F4"
+                    android:drawableLeft="@drawable/ic_personadd"
+                    android:paddingLeft="5dp"
+                    android:textColor="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.05"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_gallery" />
+
+                <TextView
+                    android:id="@+id/text_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
+            </LinearLayout>
+
+            <include
+                android:id="@+id/include"
+                layout="@layout/horizontal_user_list"
+                android:layout_width="match_parent"
+                android:layout_height="110dp" />
         </LinearLayout>
 
-        <include
-            android:id="@+id/include"
-            layout="@layout/horizontal_user_list"
+        <LinearLayout
+            android:id="@+id/set_day"
             android:layout_width="match_parent"
-            android:layout_height="110dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/set_day"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        android:padding="15dp"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-        <TextView
-            android:id="@+id/motivo_reunion_text"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Cual es el motivo de la reunion?" />
-
-        <EditText
-            android:id="@+id/motivo_reunion"
-            android:layout_width="248dp"
-            android:background="@drawable/ic_textboxradius"
-            android:layout_height="41dp"
-            android:layout_marginBottom="10dp"
-            android:focusable="true"
-            android:hint="Motivo de la reunion"
-            android:textAlignment="center"
-            android:inputType="text"
-            android:maxLines="1" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Seleccione una fecha:"
-            app:layout_constraintBottom_toTopOf="@+id/etPlannedDate"
+            android:layout_marginTop="0dp"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.117"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="15dp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+            <TextView
+                android:id="@+id/motivo_reunion_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Cual es el motivo de la reunion?" />
+
+            <EditText
+                android:textSize="15sp"
+                android:id="@+id/motivo_reunion"
+                android:layout_width="248dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:paddingBottom="5dp"
+                android:paddingHorizontal="20dp"
+                android:background="@drawable/ic_textboxradius"
+                android:focusable="true"
+                android:hint="Motivo de la reunion"
+                android:textAlignment="center"
+                android:inputType="text"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Seleccione una fecha:"
+                app:layout_constraintBottom_toTopOf="@+id/etPlannedDate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.117"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:textSize="15sp"
+                android:id="@+id/etPlannedDate"
+                android:layout_width="248dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:paddingBottom="5dp"
+                android:paddingHorizontal="20dp"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="Ingresa fecha"
+                android:textAlignment="center"
+                android:background="@drawable/ic_textboxradius"
+                android:inputType="date"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Seleccione una hora:" />
+
+            <EditText
+                android:textSize="15sp"
+                android:id="@+id/etPlannedTime"
+                android:layout_width="248dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:paddingBottom="5dp"
+                android:paddingHorizontal="20dp"
+                android:background="@drawable/ic_textboxradius"
+                android:clickable="true"
+                android:focusable="false"
+                android:textAlignment="center"
+                android:hint="Ingresa hora"
+                android:inputType="date"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/crear_reunion"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="Crear reunion"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <EditText
-            android:id="@+id/etPlannedDate"
-            android:layout_width="248dp"
-            android:layout_height="41dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:hint="Ingresa fecha"
-            android:textAlignment="center"
-            android:background="@drawable/ic_textboxradius"
-            android:inputType="date"
-            android:maxLines="1" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Seleccione una hora:" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <EditText
-            android:id="@+id/etPlannedTime"
-            android:layout_width="248dp"
-            android:layout_height="41dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/ic_textboxradius"
-            android:clickable="true"
-            android:focusable="false"
-            android:textAlignment="center"
-            android:hint="Ingresa hora"
-            android:inputType="date"
-            android:maxLines="1" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/crear_reunion"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:text="Crear reunion"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
