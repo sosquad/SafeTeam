@@ -20,7 +20,7 @@
 
     <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_menu_send</item>
-        <item name="android:tint">#fff</item>
+        <item name="android:tint">@color/quantum_lightblue50</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

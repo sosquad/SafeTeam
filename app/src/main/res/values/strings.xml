@@ -14,8 +14,8 @@
     <string name="menu_home">Inicio</string>
     <string name="menu_gallery">Reuniones</string>
     <string name="menu_slideshow">Crear Grupo</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_tools">SIN FUNCION</string>
+    <string name="menu_share">Compartir</string>
+    <string name="menu_send">Enviar</string>
     <string name="session_end">Cerrar Sesión</string>
 </resources>

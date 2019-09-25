@@ -6,15 +6,12 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_home"
             android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_groupadd24dp"
             android:title="@string/menu_slideshow" />
         <item
             android:id="@+id/nav_tools"
@@ -22,7 +19,7 @@
             android:title="@string/menu_tools" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Funcionalidades">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -37,6 +34,7 @@
     <item android:title="">
         <menu>
             <item
+                android:icon="@drawable/ic_closedp"
                 android:id="@+id/cerrarSesion"
                 android:title="@string/session_end"
                 android:onClick="logOut" />

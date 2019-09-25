@@ -1,11 +1,11 @@
 package com.my.safeteam;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PantallaBienvenida extends AppCompatActivity {
 
@@ -26,7 +26,7 @@ public class PantallaBienvenida extends AppCompatActivity {
                         login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(login);
                     }
-                }, 5000
+                }, 3000
         );
 
     }

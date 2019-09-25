@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#F7582D</color>
     <color name="colorAccent">#F7582D</color>
 
-    <color name="pantalla">#FFFFFF</color>
+    <color name="pantalla">@color/quantum_lightblue50</color>
 </resources>
