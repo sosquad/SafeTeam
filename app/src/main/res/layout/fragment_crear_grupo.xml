@@ -117,9 +117,9 @@
                     android:layout_width="100px"
                     android:layout_height="100px"
                     android:layout_gravity="right"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@drawable/boton1"
-                    android:backgroundTint="#03A9F4"
+                    android:backgroundTint="@color/colorPrimaryDark"
                     android:drawableLeft="@drawable/ic_personadd"
                     android:paddingLeft="5dp"
                     android:textColor="#FFFFFF" />
