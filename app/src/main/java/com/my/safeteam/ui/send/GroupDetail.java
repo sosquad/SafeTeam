@@ -53,8 +53,84 @@ public class GroupDetail extends Fragment {
     }
 
     private void settingDetails() {
+        settingFAB();
+        groupdetailavatar = root.findViewById(R.id.group_detail_avatar);
+        groupname = root.findViewById(R.id.nombre_grupo);
+        grouporganization = root.findViewById(R.id.nombre_organizacion);
+        created_at = root.findViewById(R.id.created_at);
+        avatar_container = root.findViewById(R.id.avatar_group_container);
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        avatar_container.getLayoutParams().height = (int) (display.getHeight() * 0.5);
+        Glide.with(getContext().getApplicationContext()).load(grupo.getAvatar()).into(groupdetailavatar);
+        created_at.setText("Creado en : " + getDate());
+        groupname.setText(grupo.getNombre());
+        grouporganization.setText("Organización : " + grupo.getContexto());
+        LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        addLeaderToList(inflater, grupo.getLider());
+        if (grupo.getUsuariosEnGrupo() != null) {
+            if (grupo.getUsuariosEnGrupo().size() > 0) {
+                for (BasicUser user : grupo.getUsuariosEnGrupo()) {
+                    final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
+                    ImageView invitedUserAvatar = userInvited.findViewById(R.id.member_avatar_selected);
+                    TextView invitedUserName = userInvited.findViewById(R.id.member_name_selected);
+                    TextView invitedUserEmail = userInvited.findViewById(R.id.member_email_selected);
+                    Glide.with(getContext().getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(invitedUserAvatar);
+                    if (user.getuId().equals(lu.getCurrentUserUid())) {
+                        invitedUserName.setText("Tú");
+                        invitedUserEmail.setVisibility(View.GONE);
+                    } else {
+                        switch (user.getEstado()) {
+                            case 0:
+                                invitedUserName.setText(user.getEmail());
+                                invitedUserEmail.setText("Estado : Rechazado");
+                                break;
+                            case 1:
+                                invitedUserName.setText(user.getEmail());
+                                invitedUserEmail.setText("Estado : En espera");
+                                break;
+                            case 2:
+                                invitedUserName.setText(user.getName());
+                                invitedUserEmail.setText(user.getEmail());
+                                break;
+                        }
+                    }
+                    userinvitedcontainer.addView(userInvited);
+                }
+            }
+        }
+
+
+    }
+
+    private void addLeaderToList(LayoutInflater inflater, BasicUser lider) {
+        final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
+        ImageView invitedUserAvatar = userInvited.findViewById(R.id.member_avatar_selected);
+        TextView invitedUserName = userInvited.findViewById(R.id.member_name_selected);
+        TextView invitedUserEmail = userInvited.findViewById(R.id.member_email_selected);
+        Glide.with(getContext().getApplicationContext()).load(lider.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(invitedUserAvatar);
+        invitedUserName.setText(lider.getName());
+        invitedUserEmail.setText("Lider");
+        userinvitedcontainer.addView(userInvited);
+    }
+
+    private void settingFAB() {
         if (grupo.getLider().getuId().equals(lu.getCurrentUserUid())) {
             dynamic_fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
+            dynamic_fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (message == null) {
+                        message = SB.snackBar("Aqui despues se podra editar :3", v, "action", null);
+                    } else {
+                        if (!message.isShown()) {
+                            message.show();
+                        } else {
+                            message.dismiss();
+                        }
+                    }
+
+                }
+            });
         } else {
             dynamic_fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,34 +153,6 @@ public class GroupDetail extends Fragment {
                 }
             });
         }
-        groupdetailavatar = root.findViewById(R.id.group_detail_avatar);
-        groupname = root.findViewById(R.id.nombre_grupo);
-        grouporganization = root.findViewById(R.id.nombre_organizacion);
-        created_at = root.findViewById(R.id.created_at);
-        avatar_container = root.findViewById(R.id.avatar_group_container);
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        avatar_container.getLayoutParams().height = (int) (display.getHeight() * 0.5);
-        Glide.with(getContext().getApplicationContext()).load(grupo.getAvatar()).into(groupdetailavatar);
-        created_at.setText("Creado en : " + getDate());
-        groupname.setText(grupo.getNombre());
-        grouporganization.setText("Organización : " + grupo.getContexto());
-        LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (grupo.getUsuariosEnGrupo() != null) {
-            if (grupo.getUsuariosEnGrupo().size() > 0) {
-                for (BasicUser user : grupo.getUsuariosEnGrupo()) {
-                    final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
-                    ImageView invitedUserAvatar = userInvited.findViewById(R.id.member_avatar_selected);
-                    TextView invitedUserName = userInvited.findViewById(R.id.member_name_selected);
-                    TextView invitedUserEmail = userInvited.findViewById(R.id.member_email_selected);
-                    Glide.with(getContext().getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(invitedUserAvatar);
-                    invitedUserName.setText(user.getName());
-                    invitedUserEmail.setText(user.getEmail());
-                    userinvitedcontainer.addView(userInvited);
-                }
-            }
-        }
-
-
     }
 
     private String getDate() {
