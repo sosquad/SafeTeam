@@ -16,32 +16,67 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.my.safeteam.DB.BasicUser;
 import com.my.safeteam.DB.Grupo;
 import com.my.safeteam.R;
+import com.my.safeteam.globals.LogedUser;
+import com.my.safeteam.utils.MySnackBar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class GroupDetail extends Fragment {
+    private MySnackBar SB = new MySnackBar();
     private ImageView groupdetailavatar;
     private TextView groupname, grouporganization, groupleader, created_at;
     private LinearLayout userinvitedcontainer;
     private RelativeLayout avatar_container;
     private View root;
     Grupo grupo;
+    FloatingActionButton dynamic_fab;
+    Snackbar message;
+    LogedUser lu = LogedUser.getInstance();
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_group_detail, container, false);
+        dynamic_fab = root.findViewById(R.id.fab_dynamic);
         userinvitedcontainer = root.findViewById(R.id.invited_people);
         if (getArguments() != null) {
             grupo = (Grupo) getArguments().getSerializable("GroupUid");
             settingDetails();
+
         }
         return root;
     }
 
     private void settingDetails() {
+        if (grupo.getLider().getuId().equals(lu.getCurrentUserUid())) {
+            dynamic_fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
+        } else {
+            dynamic_fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (message == null) {
+                        message = SB.snackBar("¿Quieres contactar al lider?", v, "Contactar", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        });
+                    } else {
+                        if (!message.isShown()) {
+                            message.show();
+                        } else {
+                            message.dismiss();
+                        }
+                    }
+
+                }
+            });
+        }
         groupdetailavatar = root.findViewById(R.id.group_detail_avatar);
         groupname = root.findViewById(R.id.nombre_grupo);
         grouporganization = root.findViewById(R.id.nombre_organizacion);

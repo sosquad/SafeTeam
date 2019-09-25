@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.my.safeteam.DB.Grupo;
+import com.my.safeteam.DB.ReferenciaAlGrupo;
 import com.my.safeteam.R;
 import com.my.safeteam.globals.LogedUser;
 import com.my.safeteam.utils.Animaciones;
@@ -46,6 +47,7 @@ public class HomeFragment extends Fragment {
     CardView cardView;
 
     List<Grupo> grupos = new ArrayList<>();
+    List<Grupo> externalGroup = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -65,8 +67,9 @@ public class HomeFragment extends Fragment {
                         grupo.setuId(snapshot.getKey());
                         grupos.add(grupo);
                     }
+                    showGroups();
+
                 }
-                showGroups();
             }
 
             @Override
@@ -74,6 +77,23 @@ public class HomeFragment extends Fragment {
 
             }
         });
+        FirebaseDatabase.getInstance().getReference("USERS/" + lu.getCurrentUserUid() + "/PARTICIPANTE")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                ReferenciaAlGrupo referenciaAlGrupo = data.getValue(ReferenciaAlGrupo.class);
+                                SearchingGroupByReference(referenciaAlGrupo.getUrlGrupo());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
         return root;
     }
 
@@ -135,5 +155,25 @@ public class HomeFragment extends Fragment {
         } else {
             return "Creado hace " + (elapsed_time) + " minutos.";
         }
+    }
+
+    public void SearchingGroupByReference(String reference) {
+        FirebaseDatabase.getInstance().getReference(reference)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        System.out.println(dataSnapshot);
+                        if (dataSnapshot.exists()) {
+                            grupos.add(dataSnapshot.getValue(Grupo.class));
+                            showGroups();
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 }

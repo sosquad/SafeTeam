@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -44,6 +45,7 @@ import com.google.gson.Gson;
 import com.my.safeteam.DB.InvitacionGrupo;
 import com.my.safeteam.DB.User;
 import com.my.safeteam.globals.LogedUser;
+import com.my.safeteam.utils.DebouncedOnClickListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     FrameLayout redCircle;
     TextView countTextView;
     List<InvitacionGrupo> invitaciones = new ArrayList<>();
+    Intent seeNotifications;
+    final int START_VIEW_NOTIFICATION = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,17 +192,17 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         redCircle = rootView.findViewById(R.id.view_alert_red_circle);
         countTextView = rootView.findViewById(R.id.view_alert_count_textview);
         lookForNotifications();
-        rootView.setOnClickListener(new View.OnClickListener() {
+        rootView.setOnClickListener(new DebouncedOnClickListener(1000) {
             @Override
-            public void onClick(View v) {
+            public void onDebouncedClick(View v) {
                 onOptionsItemSelected(alertMenuItem);
+
             }
         });
         return super.onPrepareOptionsMenu(menu);
     }
 
     private void lookForNotifications() {
-
         FirebaseDatabase.getInstance().getReference("USERS/" + lu.getCurrentUserUid() + "/INVITACIONES/GRUPO")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -208,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                                 InvitacionGrupo invite = data.getValue(InvitacionGrupo.class);
                                 addInvite(invite);
                             }
-
                         }
                     }
 
@@ -223,10 +226,10 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.notifications:
-                Intent seeNotifications = new Intent(this, NotificationView.class);
+                seeNotifications = new Intent(this, NotificationView.class);
                 seeNotifications.putExtra("invitaciones", (Serializable) invitaciones);
                 if (invitaciones.size() > 0) {
-                    startActivity(seeNotifications);
+                    startActivityForResult(seeNotifications, START_VIEW_NOTIFICATION);
                 } else {
                     Toast.makeText(this, "No tienes notificaciones!", Toast.LENGTH_SHORT).show();
                 }
@@ -283,8 +286,25 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
                 notificationCounter++;
             }
         }
-        countTextView.setText(String.valueOf(notificationCounter));
-        redCircle.setVisibility(View.VISIBLE);
+        if (notificationCounter > 0) {
+            countTextView.setText(String.valueOf(notificationCounter));
+            redCircle.setVisibility(View.VISIBLE);
+        } else {
+            redCircle.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (requestCode == START_VIEW_NOTIFICATION) {
+            if (data != null) {
+                invitaciones = (ArrayList<InvitacionGrupo>) data.getExtras().get("result");
+                actualizarCounter();
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
 
