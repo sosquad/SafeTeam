@@ -54,15 +54,19 @@ public class GroupDetail extends Fragment {
         groupname.setText(grupo.getNombre());
         grouporganization.setText("Organización : " + grupo.getContexto());
         LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        for (BasicUser user : grupo.getUsuariosEnGrupo()) {
-            final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
-            ImageView invitedUserAvatar = userInvited.findViewById(R.id.member_avatar_selected);
-            TextView invitedUserName = userInvited.findViewById(R.id.member_name_selected);
-            TextView invitedUserEmail = userInvited.findViewById(R.id.member_email_selected);
-            Glide.with(getContext().getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(invitedUserAvatar);
-            invitedUserName.setText(user.getName());
-            invitedUserEmail.setText(user.getEmail());
-            userinvitedcontainer.addView(userInvited);
+        if (grupo.getUsuariosEnGrupo() != null) {
+            if (grupo.getUsuariosEnGrupo().size() > 0) {
+                for (BasicUser user : grupo.getUsuariosEnGrupo()) {
+                    final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
+                    ImageView invitedUserAvatar = userInvited.findViewById(R.id.member_avatar_selected);
+                    TextView invitedUserName = userInvited.findViewById(R.id.member_name_selected);
+                    TextView invitedUserEmail = userInvited.findViewById(R.id.member_email_selected);
+                    Glide.with(getContext().getApplicationContext()).load(user.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(invitedUserAvatar);
+                    invitedUserName.setText(user.getName());
+                    invitedUserEmail.setText(user.getEmail());
+                    userinvitedcontainer.addView(userInvited);
+                }
+            }
         }
 
 
