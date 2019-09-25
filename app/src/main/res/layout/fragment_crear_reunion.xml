@@ -57,7 +57,7 @@
                     android:layout_height="100px"
                     android:layout_gravity="right"
                     android:background="@drawable/boton1"
-                    android:backgroundTint="#03A9F4"
+                    android:backgroundTint="@color/colorAccent"
                     android:drawableLeft="@drawable/ic_personadd"
                     android:paddingLeft="5dp"
                     android:textColor="#FFFFFF"
