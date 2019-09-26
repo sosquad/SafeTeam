@@ -68,7 +68,6 @@ public class HomeFragment extends Fragment {
                         grupos.add(grupo);
                     }
                     showGroups();
-
                 }
             }
 
@@ -84,17 +83,43 @@ public class HomeFragment extends Fragment {
                         if (dataSnapshot.exists()) {
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 ReferenciaAlGrupo referenciaAlGrupo = data.getValue(ReferenciaAlGrupo.class);
+                                System.out.println(referenciaAlGrupo.getUrlGrupo());
                                 SearchingGroupByReference(referenciaAlGrupo.getUrlGrupo());
                             }
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });
         return root;
+    }
+
+    private void oneByOne(Grupo grupo) {
+        final Grupo selectedGroup = grupo;
+        final LayoutInflater layoutInflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout groupRow = (LinearLayout) layoutInflater.inflate(R.layout.group_link, null);
+        cardView = groupRow.findViewById(R.id.nav_send);
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("GroupUid", selectedGroup);
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.nav_send, bundle);
+            }
+        });
+        groupAvatar = groupRow.findViewById(R.id.group_avatar_row);
+        groupName = groupRow.findViewById(R.id.group_name);
+        groupOrganitation = groupRow.findViewById(R.id.group_organitation);
+        time_elapsed = groupRow.findViewById(R.id.creado_hace);
+        Glide.with(root.getContext().getApplicationContext()).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
+        groupName.setText("Grupo : " + grupo.getNombre());
+        groupOrganitation.setText("Organizacion : " + grupo.getContexto());
+        System.out.println(grupo.getCreated_at());
+        time_elapsed.setText(getDate(grupo.getCreated_at()));
+        groupContainer.addView(groupRow);
     }
 
     private void showGroups() {
@@ -162,11 +187,10 @@ public class HomeFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        System.out.println(dataSnapshot);
                         if (dataSnapshot.exists()) {
-                            grupos.add(dataSnapshot.getValue(Grupo.class));
-                            showGroups();
-
+                            Grupo grupo = dataSnapshot.getValue(Grupo.class);
+                            grupo.setuId(dataSnapshot.getKey());
+                            addWithoutRepeat(grupo);
                         }
                     }
 
@@ -175,5 +199,17 @@ public class HomeFragment extends Fragment {
 
                     }
                 });
+    }
+
+    public void addWithoutRepeat(Grupo grupo) {
+        boolean found = false;
+        for (Grupo g : grupos) {
+            if (g.getuId().equals(grupo.getuId())) {
+                found = true;
+            }
+        }
+        if (!found) {
+            oneByOne(grupo);
+        }
     }
 }
