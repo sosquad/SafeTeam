@@ -26,6 +26,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.login.LoginManager;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
     TextView countTextView;
     List<InvitacionGrupo> invitaciones = new ArrayList<>();
     Intent seeNotifications;
+    LottieAnimationView notificationAlert;
     final int START_VIEW_NOTIFICATION = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         FrameLayout rootView = (FrameLayout) alertMenuItem.getActionView();
         redCircle = rootView.findViewById(R.id.view_alert_red_circle);
         countTextView = rootView.findViewById(R.id.view_alert_count_textview);
+        notificationAlert = rootView.findViewById(R.id.notification_alert_animation);
+
         lookForNotifications();
         rootView.setOnClickListener(new DebouncedOnClickListener(1000) {
             @Override
@@ -289,8 +293,11 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
         if (notificationCounter > 0) {
             countTextView.setText(String.valueOf(notificationCounter));
             redCircle.setVisibility(View.VISIBLE);
+            notificationAlert.setVisibility(View.VISIBLE);
+            notificationAlert.playAnimation();
         } else {
             redCircle.setVisibility(View.GONE);
+            notificationAlert.cancelAnimation();
         }
     }
 

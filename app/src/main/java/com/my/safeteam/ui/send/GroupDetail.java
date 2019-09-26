@@ -30,7 +30,7 @@ import java.util.Date;
 public class GroupDetail extends Fragment {
     private MySnackBar SB = new MySnackBar();
     private ImageView groupdetailavatar;
-    private TextView groupname, grouporganization, groupleader, created_at;
+    private TextView groupname, grouporganization, created_at;
     private LinearLayout userinvitedcontainer;
     private RelativeLayout avatar_container;
     private View root;
@@ -80,20 +80,7 @@ public class GroupDetail extends Fragment {
                         invitedUserName.setText("Tú");
                         invitedUserEmail.setVisibility(View.GONE);
                     } else {
-                        switch (user.getEstado()) {
-                            case 0:
-                                invitedUserName.setText(user.getEmail());
-                                invitedUserEmail.setText("Estado : Rechazado");
-                                break;
-                            case 1:
-                                invitedUserName.setText(user.getEmail());
-                                invitedUserEmail.setText("Estado : En espera");
-                                break;
-                            case 2:
-                                invitedUserName.setText(user.getName());
-                                invitedUserEmail.setText(user.getEmail());
-                                break;
-                        }
+                        setStatus(user.getEstado(), user, invitedUserEmail, invitedUserName);
                     }
                     userinvitedcontainer.addView(userInvited);
                 }
@@ -168,5 +155,22 @@ public class GroupDetail extends Fragment {
         SimpleDateFormat simple = new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date(grupo.getCreated_at());
         return simple.format(date);
+    }
+
+    private void setStatus(int i, BasicUser user, TextView invitedUserEmail, TextView invitedUserName) {
+        switch (i) {
+            case 0:
+                invitedUserName.setText(user.getEmail());
+                invitedUserEmail.setText("Estado : Rechazado");
+                break;
+            case 1:
+                invitedUserName.setText(user.getEmail());
+                invitedUserEmail.setText("Estado : En espera");
+                break;
+            case 2:
+                invitedUserName.setText(user.getName());
+                invitedUserEmail.setText(user.getEmail());
+                break;
+        }
     }
 }
