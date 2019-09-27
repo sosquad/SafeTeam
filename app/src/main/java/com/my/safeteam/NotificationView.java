@@ -75,7 +75,6 @@ public class NotificationView extends AppCompatActivity {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                             if (dataSnapshot.exists()) {
                                 final Grupo grupo = dataSnapshot.getValue(Grupo.class);
                                 Glide.with(NotificationView.this).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
@@ -85,7 +84,10 @@ public class NotificationView extends AppCompatActivity {
                                 accept_btn.setOnClickListener(new DebouncedOnClickListener(1000) {
                                     @Override
                                     public void onDebouncedClick(View v) {
-                                        responseToInvitation(2, invitation, grupo, invitationCard);
+                                        if(invitation.isAceptado() == false){
+                                            invitation.setAceptado(true);
+                                            responseToInvitation(2, invitation, grupo, invitationCard);
+                                        }
                                     }
                                 });
                                 cancel_btn.setOnClickListener(new DebouncedOnClickListener(1000) {
