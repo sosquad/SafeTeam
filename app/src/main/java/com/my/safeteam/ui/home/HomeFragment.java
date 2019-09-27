@@ -67,8 +67,8 @@ public class HomeFragment extends Fragment {
                         grupo.setuId(snapshot.getKey());
                         grupos.add(grupo);
                     }
-                    showGroups();
                 }
+                showGroups();
             }
 
             @Override
@@ -124,38 +124,45 @@ public class HomeFragment extends Fragment {
 
     private void showGroups() {
         groupContainer.removeAllViews();
-        if (grupos.size() > 0) {
-            for (Grupo grupo : grupos) {
-                final Grupo selectedGroup = grupo;
-                final LayoutInflater layoutInflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                LinearLayout groupRow = (LinearLayout) layoutInflater.inflate(R.layout.group_link, null);
-                cardView = groupRow.findViewById(R.id.nav_send);
-                cardView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("GroupUid", selectedGroup);
-                        NavController navController = Navigation.findNavController(v);
-                        navController.navigate(R.id.nav_send, bundle);
-                    }
-                });
-                groupAvatar = groupRow.findViewById(R.id.group_avatar_row);
-                groupName = groupRow.findViewById(R.id.group_name);
-                groupOrganitation = groupRow.findViewById(R.id.group_organitation);
-                time_elapsed = groupRow.findViewById(R.id.creado_hace);
-                Glide.with(root.getContext().getApplicationContext()).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
-                groupName.setText("Grupo : " + grupo.getNombre());
-                groupOrganitation.setText("Organizacion : " + grupo.getContexto());
-                System.out.println(grupo.getCreated_at());
-                time_elapsed.setText(getDate(grupo.getCreated_at()));
-                groupContainer.addView(groupRow);
-            }
-            ScrollView container_scroll = root.findViewById(R.id.scroll_current_groups);
-            LottieAnimationView lottieAnimationView = root.findViewById(R.id.loading_view);
-            lottieAnimationView.setVisibility(View.GONE);
-            container_scroll.setVisibility(View.VISIBLE);
+        if(grupos != null){
+            if (grupos.size() > 0) {
+                for (Grupo grupo : grupos) {
+                    final Grupo selectedGroup = grupo;
+                    final LayoutInflater layoutInflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LinearLayout groupRow = (LinearLayout) layoutInflater.inflate(R.layout.group_link, null);
+                    cardView = groupRow.findViewById(R.id.nav_send);
+                    cardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("GroupUid", selectedGroup);
+                            NavController navController = Navigation.findNavController(v);
+                            navController.navigate(R.id.nav_send, bundle);
+                        }
+                    });
+                    groupAvatar = groupRow.findViewById(R.id.group_avatar_row);
+                    groupName = groupRow.findViewById(R.id.group_name);
+                    groupOrganitation = groupRow.findViewById(R.id.group_organitation);
+                    time_elapsed = groupRow.findViewById(R.id.creado_hace);
+                    Glide.with(root.getContext().getApplicationContext()).load(grupo.getAvatar()).apply(RequestOptions.circleCropTransform()).into(groupAvatar);
+                    groupName.setText("Grupo : " + grupo.getNombre());
+                    groupOrganitation.setText("Organizacion : " + grupo.getContexto());
+                    System.out.println(grupo.getCreated_at());
+                    time_elapsed.setText(getDate(grupo.getCreated_at()));
+                    groupContainer.addView(groupRow);
+                }
+                ScrollView container_scroll = root.findViewById(R.id.scroll_current_groups);
+                LottieAnimationView lottieAnimationView = root.findViewById(R.id.loading_view);
+                lottieAnimationView.setVisibility(View.GONE);
+                container_scroll.setVisibility(View.VISIBLE);
 
-        } else {
+            } else {
+                ScrollView container_scroll = root.findViewById(R.id.scroll_current_groups);
+                LottieAnimationView lottieAnimationView = root.findViewById(R.id.loading_view);
+                lottieAnimationView.setVisibility(View.GONE);
+                container_scroll.setVisibility(View.VISIBLE);
+            }
+        }else {
             ScrollView container_scroll = root.findViewById(R.id.scroll_current_groups);
             LottieAnimationView lottieAnimationView = root.findViewById(R.id.loading_view);
             lottieAnimationView.setVisibility(View.GONE);
