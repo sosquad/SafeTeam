@@ -308,6 +308,9 @@ public class MainActivity extends AppCompatActivity implements View.OnSystemUiVi
             if (data != null) {
                 invitaciones = (ArrayList<InvitacionGrupo>) data.getExtras().get("result");
                 actualizarCounter();
+            }else{
+                invitaciones = new ArrayList<>();
+                actualizarCounter();
             }
         }
 
