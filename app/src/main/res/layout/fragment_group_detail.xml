@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
     <RelativeLayout
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -48,6 +46,20 @@
                 android:textSize="18dp"
                 android:textStyle="bold|italic"
                 app:layout_constraintStart_toStartOf="parent" />
+            <EditText
+                android:id="@+id/edit_nombre_grupo"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:text="TextView"
+                android:textAlignment="center"
+                android:backgroundTint="#99FFFFFF"
+                android:textColor="@color/quantum_black_100"
+                android:textSize="18dp"
+                android:textStyle="bold|italic"
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"
+                />
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
@@ -73,7 +85,14 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp">
 
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Organización : "
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/nombre_grupo"
+                    />
                 <TextView
                     android:id="@+id/nombre_organizacion"
                     android:layout_width="wrap_content"
@@ -83,7 +102,20 @@
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.036"
-                    app:layout_constraintStart_toEndOf="@+id/nombre_grupo" />
+                    app:layout_constraintStart_toEndOf="@+id/nombre_grupo"
+                    />
+                <EditText
+                    android:id="@+id/edit_nombre_organizacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/quantum_white_100"
+                    android:text="TextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.036"
+                    app:layout_constraintStart_toEndOf="@+id/nombre_grupo"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_marginTop="8dp"
@@ -186,7 +218,8 @@
                     android:id="@+id/invited_people"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:animateLayoutChanges="true"/>
             </ScrollView>
         </LinearLayout>
     </ScrollView>
@@ -210,6 +243,42 @@
         app:fab_colorRipple="#99FFFFFF">
 
     </com.github.clans.fab.FloatingActionMenu>
+    <LinearLayout
+        android:id="@+id/btn_edit_container"
+        app:layout_constraintBottom_toBottomOf="@id/avatar_group_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginBottom="55dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:animateLayoutChanges="true"
+        android:visibility="gone">
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/edit_apply_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            android:layout_marginBottom="55dp"
+            app:fab_colorPressed="#E75043"
+            app:fab_colorRipple="#99FFFFFF"
+            app:fab_size="mini"
+            app:fab_label="Aplicar"
+            android:textDirection="ltr"
+            android:src="@drawable/ic_check"/>
+        <com.github.clans.fab.FloatingActionButton
+            android:layout_marginBottom="55dp"
+            android:id="@+id/edit_discard_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_colorPressed="#E75043"
+            app:fab_colorRipple="#99FFFFFF"
+            app:fab_size="mini"
+            android:src="@drawable/ic_closedp"
+            android:textDirection="rtl"/>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,8 +46,10 @@ public class GroupDetail extends Fragment {
     private MySnackBar SB = new MySnackBar();
     private ImageView groupdetailavatar;
     private TextView groupname, grouporganization, created_at;
-    private LinearLayout userinvitedcontainer;
+    private LinearLayout userinvitedcontainer, containerEditButtons;
     private RelativeLayout avatar_container;
+    private FloatingActionButton applyChanges, cancelChanges;
+    EditText editNombreGrupo, editContextoGrupo;
     private View root;
     Grupo grupo;
     FloatingActionMenu dynamic_fab;
@@ -58,6 +62,8 @@ public class GroupDetail extends Fragment {
         dynamic_fab = root.findViewById(R.id.fab_dynamic);
         addMeet = root.findViewById(R.id.add_meet_btn);
         userinvitedcontainer = root.findViewById(R.id.invited_people);
+        applyChanges = root.findViewById(R.id.edit_apply_option);
+        cancelChanges = root.findViewById(R.id.edit_discard_option);
         if (getArguments() != null) {
             grupo = (Grupo) getArguments().getSerializable("GroupUid");
             settingDetails();
@@ -78,7 +84,7 @@ public class GroupDetail extends Fragment {
         Glide.with(getContext().getApplicationContext()).load(grupo.getAvatar()).into(groupdetailavatar);
         created_at.setText("Creado en : " + getDate());
         groupname.setText(grupo.getNombre());
-        grouporganization.setText("Organización : " + grupo.getContexto());
+        grouporganization.setText(grupo.getContexto());
         LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         addLeaderToList(inflater, grupo.getLider());
         if (grupo.getUsuariosEnGrupo() != null) {
@@ -131,15 +137,58 @@ public class GroupDetail extends Fragment {
         if (grupo.getLider().getuId().equals(lu.getCurrentUserUid())) {
             addMeet.setVisibility(View.VISIBLE);
             FloatingActionButton botonDelete = (FloatingActionButton) inflater.inflate(R.layout.item_fab, null);
+            FloatingActionButton botonEdit = (FloatingActionButton) inflater.inflate(R.layout.item_fab, null);
+            botonEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
+            botonEdit.setLabelText("Editar Grupo");
             botonDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_delete));
-            botonDelete.setLabelText("Eliminar");
+            botonDelete.setLabelText("Eliminar Grupo");
             dynamic_fab.setClosedOnTouchOutside(true);
-            dynamic_fab.addMenuButton(botonDelete);
-            dynamic_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
-            botonDelete.setOnClickListener((View v) -> SB.snackBar("¿Desea borrar este grupo? ", v, "BORRAR", (View view) -> borrarGrupo(view)).show());
+            dynamic_fab.addMenuButton(botonDelete,0);
+            dynamic_fab.addMenuButton(botonEdit,1);
+            dynamic_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_settings));
+            botonDelete.setOnClickListener((View v) ->
+            {
+                dynamic_fab.close(true);
+                SB.snackBar("¿Desea borrar este grupo? ", v, "BORRAR", (View view) -> borrarGrupo(view)).show();
+            });
+            botonEdit.setOnClickListener((View v) -> {
+                dynamic_fab.close(true);
+                editarGrupo(v);
+            });
         } else {
+            dynamic_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_email));
             dynamic_fab.setOnClickListener((View v)-> SB.snackBar("¿Quieres contactar al lider?", v, "Contactar",null));
         }
+    }
+
+    private void editarGrupo(View v) {
+        editNombreGrupo = root.findViewById(R.id.edit_nombre_grupo);
+        editContextoGrupo = root.findViewById(R.id.edit_nombre_organizacion);
+        containerEditButtons = root.findViewById(R.id.btn_edit_container);
+        if(containerEditButtons != null){
+            containerEditButtons.setVisibility(View.VISIBLE);
+        }
+        editNombreGrupo.setText(groupname.getText());
+        groupname.setVisibility(View.GONE);
+        editNombreGrupo.setVisibility(View.VISIBLE);
+        editNombreGrupo.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null) {
+            imm.showSoftInput(editNombreGrupo, InputMethodManager.SHOW_IMPLICIT);
+        }
+        editContextoGrupo.setText(grouporganization.getText());
+        grouporganization.setVisibility(View.GONE);
+        editContextoGrupo.setVisibility(View.VISIBLE);
+
+        cancelChanges.setOnClickListener((View view) -> closeEditarGrupo());
+    }
+
+    private void closeEditarGrupo() {
+        editNombreGrupo.setVisibility(View.GONE);
+        editContextoGrupo.setVisibility(View.GONE);
+        groupname.setVisibility(View.VISIBLE);
+        grouporganization.setVisibility(View.VISIBLE);
+        containerEditButtons.setVisibility(View.GONE);
     }
 
     private void borrarGrupo(View v) {
