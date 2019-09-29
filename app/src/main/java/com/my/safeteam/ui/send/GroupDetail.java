@@ -6,25 +6,38 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.my.safeteam.DB.BasicUser;
 import com.my.safeteam.DB.Grupo;
+import com.my.safeteam.DB.ReferenciaAlGrupo;
 import com.my.safeteam.R;
 import com.my.safeteam.globals.LogedUser;
 import com.my.safeteam.utils.MySnackBar;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class GroupDetail extends Fragment {
@@ -35,19 +48,19 @@ public class GroupDetail extends Fragment {
     private RelativeLayout avatar_container;
     private View root;
     Grupo grupo;
-    FloatingActionButton dynamic_fab;
-    Snackbar message;
+    FloatingActionMenu dynamic_fab;
     LogedUser lu = LogedUser.getInstance();
+    LayoutInflater inflater;
+    Button addMeet;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_group_detail, container, false);
         dynamic_fab = root.findViewById(R.id.fab_dynamic);
+        addMeet = root.findViewById(R.id.add_meet_btn);
         userinvitedcontainer = root.findViewById(R.id.invited_people);
         if (getArguments() != null) {
             grupo = (Grupo) getArguments().getSerializable("GroupUid");
             settingDetails();
-
         }
         return root;
     }
@@ -94,9 +107,13 @@ public class GroupDetail extends Fragment {
         TextView invitedUserName = userInvited.findViewById(R.id.member_name_selected);
         TextView invitedUserEmail = userInvited.findViewById(R.id.member_email_selected);
         Glide.with(getContext().getApplicationContext()).load(lider.getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(invitedUserAvatar);
-        invitedUserName.setText(lider.getName());
+        invitedUserName.setText(grupo.getLider().getuId().equals(lu.getCurrentUserUid()) ? "Tú" : lider.getName());
         invitedUserEmail.setText("Lider");
         userinvitedcontainer.addView(userInvited);
+        addMeet.setOnClickListener((View v) ->{
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.nav_gallery);
+        });
     }
 
     private void settingEnviroment(boolean isLeaderOrNot) {
@@ -110,45 +127,48 @@ public class GroupDetail extends Fragment {
     }
 
     private void settingFAB() {
+        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (grupo.getLider().getuId().equals(lu.getCurrentUserUid())) {
-            dynamic_fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
-            dynamic_fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (message == null) {
-                        message = SB.snackBar("Aqui despues se podra editar :3", v, "action", null);
-                    } else {
-                        if (!message.isShown()) {
-                            message.show();
-                        } else {
-                            message.dismiss();
-                        }
-                    }
-
-                }
-            });
+            addMeet.setVisibility(View.VISIBLE);
+            FloatingActionButton botonDelete = (FloatingActionButton) inflater.inflate(R.layout.item_fab, null);
+            botonDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_delete));
+            botonDelete.setLabelText("Eliminar");
+            dynamic_fab.setClosedOnTouchOutside(true);
+            dynamic_fab.addMenuButton(botonDelete);
+            dynamic_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_action_edit));
+            botonDelete.setOnClickListener((View v) -> SB.snackBar("¿Desea borrar este grupo? ", v, "BORRAR", (View view) -> borrarGrupo(view)).show());
         } else {
-            dynamic_fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (message == null) {
-                        message = SB.snackBar("¿Quieres contactar al lider?", v, "Contactar", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        });
-                    } else {
-                        if (!message.isShown()) {
-                            message.show();
-                        } else {
-                            message.dismiss();
-                        }
-                    }
-
-                }
-            });
+            dynamic_fab.setOnClickListener((View v)-> SB.snackBar("¿Quieres contactar al lider?", v, "Contactar",null));
         }
+    }
+
+    private void borrarGrupo(View v) {
+        String referencia = "USERS/"+grupo.getLider().getuId()+"/GRUPOS/"+grupo.getuId();
+        for(BasicUser g : grupo.getUsuariosEnGrupo()){
+            FirebaseDatabase.getInstance().getReference("USERS/"+g.getuId()+"/PARTICIPANTE")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot data : dataSnapshot.getChildren()){
+                                if(data.getValue(ReferenciaAlGrupo.class).getUrlGrupo().equals(referencia)){
+                                    FirebaseDatabase.getInstance().getReference("USERS/"+g.getuId()+"/PARTICIPANTE/"+data.getKey()).removeValue();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+        }
+        FirebaseDatabase.getInstance().getReference("USERS/"+lu.getCurrentUserUid()+"/GRUPOS/"+grupo.getuId())
+                .removeValue((@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) -> {
+                    Toast.makeText(root.getContext(),"Grupo eliminado",Toast.LENGTH_LONG).show();
+                    NavController navController = Navigation.findNavController(root);
+                    navController.navigate(R.id.nav_home);
+                });
     }
 
     private String getDate() {

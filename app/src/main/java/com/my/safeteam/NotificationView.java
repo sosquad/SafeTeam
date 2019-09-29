@@ -1,5 +1,7 @@
 package com.my.safeteam;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AnimationSet;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +34,7 @@ import com.my.safeteam.DB.Grupo;
 import com.my.safeteam.DB.InvitacionGrupo;
 import com.my.safeteam.DB.ReferenciaAlGrupo;
 import com.my.safeteam.globals.LogedUser;
+import com.my.safeteam.utils.Animaciones;
 import com.my.safeteam.utils.DebouncedOnClickListener;
 
 import java.util.ArrayList;
@@ -123,37 +128,59 @@ public class NotificationView extends AppCompatActivity {
                                 if (user.getuId().equals(lu.getCurrentUserUid())) {
                                     FirebaseDatabase.getInstance().getReference(acceptInvitationPath + "/" + data.getKey())
                                             .child("estado").setValue(response);
-                                    notificationContainer.removeView(view);
+                                    LinearLayout card = view.findViewById(R.id.info_card_invitation);
+                                    LottieAnimationView cancel = view.findViewById(R.id.cancel_animation_invitation);
+                                    card.setAnimation(getAnimation());
+                                    cancel.setVisibility(View.VISIBLE);
+                                    cancel.addAnimatorListener(new Animator.AnimatorListener() {
+                                        @Override
+                                        public void onAnimationStart(Animator animation) {
 
+                                        }
+
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            notificationContainer.removeView(view);
+                                            FirebaseDatabase.getInstance().getReference("USERS/" + lu.getCurrentUserUid() + "/INVITACIONES/GRUPO/")
+                                                    .child(invitation.getIDGrupo()).removeValue(new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                                    if (response == 2) {
+                                                        createReferenceToGroup(invitation, grupo);
+                                                        Toast.makeText(NotificationView.this, "Invitación a " + grupo.getNombre() + " aceptada!", Toast.LENGTH_LONG).show();
+                                                    } else if (response == 0) {
+                                                        Toast.makeText(NotificationView.this, "Invitación a " + grupo.getNombre() + " rechazada!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                    invitaciones.remove(invitation);
+                                                    Intent returnData = new Intent();
+                                                    returnData.putExtra("result", invitaciones);
+                                                    setResult(RESULT_OK, returnData);
+                                                    if (invitaciones.size() == 0) {
+                                                        finish();
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                        @Override
+                                        public void onAnimationCancel(Animator animation) {
+
+                                        }
+
+                                        @Override
+                                        public void onAnimationRepeat(Animator animation) {
+
+                                        }
+                                    });
+                                    cancel.playAnimation();
                                 }
                             }
                         }
                     }
-
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
                 });
-        FirebaseDatabase.getInstance().getReference("USERS/" + lu.getCurrentUserUid() + "/INVITACIONES/GRUPO/")
-                .child(invitation.getIDGrupo()).removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                if (response == 2) {
-                    createReferenceToGroup(invitation, grupo);
-                    Toast.makeText(NotificationView.this, "Invitación a " + grupo.getNombre() + " aceptada!", Toast.LENGTH_LONG).show();
-                } else if (response == 0) {
-                    Toast.makeText(NotificationView.this, "Invitación a " + grupo.getNombre() + " rechazada!", Toast.LENGTH_LONG).show();
-                }
-                invitaciones.remove(invitation);
-                Intent returnData = new Intent();
-                returnData.putExtra("result", invitaciones);
-                setResult(RESULT_OK, returnData);
-                if (invitaciones.size() == 0) {
-                    finish();
-                }
-            }
-        });
+
     }
 
     public void createReferenceToGroup(final InvitacionGrupo invitation, final Grupo grupo) {
@@ -165,8 +192,8 @@ public class NotificationView extends AppCompatActivity {
     public String getDateFromMilis(long milis) {
         long currentDate = System.currentTimeMillis();
         long elapsed_time = TimeUnit.MILLISECONDS.toMinutes(currentDate - milis);
-        double hour = 0;
-        double days = 0;
+        double hour;
+        double days;
         if ((elapsed_time / 60) >= 1) {
             hour = Math.floor(elapsed_time / 60);
             if (hour / 24 >= 1) {
@@ -178,5 +205,10 @@ public class NotificationView extends AppCompatActivity {
         } else {
             return "Hace " + (elapsed_time) + " minutos.";
         }
+    }
+
+    private AnimationSet getAnimation(){
+        Animaciones anim = new Animaciones();
+        return anim.slideFadeAnimation(300,0,0,0,0,1.0f,0.0f);
     }
 }

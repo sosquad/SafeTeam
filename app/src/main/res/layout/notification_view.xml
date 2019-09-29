@@ -9,6 +9,7 @@
     app:cardUseCompatPadding="true">
 
     <LinearLayout
+        android:id="@+id/info_card_invitation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -71,23 +72,25 @@
                 android:gravity="center"
                 android:clickable="true"
                 android:focusable="true">
-
-                <Button
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:id="@+id/accept_group"
-                    android:layout_height="30dp"
-                    android:layout_width="30dp"
-                    android:background="@drawable/ic_check"
-                    android:layout_marginEnd="20dp"
-                    android:clickable="true"
-                    android:focusable="true" />
-
                 <Button
                     android:foreground="?android:attr/selectableItemBackground"
                     android:id="@+id/cancel_group"
-                    android:layout_height="30dp"
-                    android:layout_width="30dp"
+                    android:layout_height="32dp"
+                    android:layout_width="32dp"
+                    android:layout_marginEnd="17dp"
+                    android:translationX="-1dp"
+                    android:translationY="-1dp"
                     android:background="@drawable/ic_cancel" />
+                <Button
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:id="@+id/accept_group"
+                    android:layout_height="32dp"
+                    android:layout_width="32dp"
+                    android:background="@drawable/ic_check"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+
             </LinearLayout>
         </LinearLayout>
 
@@ -107,6 +110,18 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/cancel_animation_invitation"
+        android:layout_width="match_parent"
+        android:scaleX="2.5"
+        android:scaleY="2.5"
+        android:layout_height="98dp"
+        android:visibility="invisible"
+        app:lottie_fileName="delete-slash.json"
+        app:lottie_imageAssetsFolder="assets"
+        app:lottie_loop="false"
+        />
 
 
 </androidx.cardview.widget.CardView>

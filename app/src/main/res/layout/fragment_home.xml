@@ -1,28 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/quantum_bluegrey50">
     <ScrollView
-        android:id="@+id/scroll_current_groups"
+        android:id="@+id/home_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/quantum_bluegrey50"
+        android:orientation="vertical"
         android:visibility="gone">
-
         <LinearLayout
-            android:id="@+id/group_container"
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginBottom="20dp"
-            android:paddingBottom="20dp" />
-
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/scroll_current_groups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/scroll_ext_groups"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:visibility="gone">
+                <LinearLayout
+                    android:id="@+id/group_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp"
+                    android:animateLayoutChanges="true"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/scroll_ext_groups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scroll_current_groups"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:visibility="gone">
+                <LinearLayout
+                    android:id="@+id/group_ext_container"
+                    android:layout_width="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="20dp"
+                    android:paddingBottom="20dp"
+                    android:animateLayoutChanges="true"
+                    />
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
+
 
     <com.airbnb.lottie.LottieAnimationView
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,5 +75,5 @@
         app:lottie_fileName="main-loader.json"
         app:lottie_loop="true"
         app:lottie_autoPlay="true" />
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

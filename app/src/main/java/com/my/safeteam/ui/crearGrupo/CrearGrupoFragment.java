@@ -35,6 +35,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -74,7 +75,7 @@ public class CrearGrupoFragment extends Fragment {
     ScrollView containerCrearGrupo;
     List<BasicUser> BasicUser;
     LottieAnimationView lottieAnimationView;
-
+    UploadTask ut;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_crear_grupo, container, false);
@@ -301,78 +302,31 @@ public class CrearGrupoFragment extends Fragment {
         ref.child(uniqueKey).setValue(newGroup);
         mStorageRef = FirebaseStorage.getInstance().getReference("USERS/" + lu.getUser().getuId() + "/" + uniqueKey + "/AVATAR");
         if (contentURI != null) {
-            mStorageRef.child("avatar.jpg")
-                    .putFile(contentURI)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setProgress(0);
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                }
-                            }, 1000);
-                            Toast.makeText(root.getContext(), "Grupo creado con exito!", Toast.LENGTH_SHORT).show();
-                            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    ref.child(uniqueKey).child("avatar").setValue(uri.toString());
-                                    sendInvitation(uniqueKey);
-                                    AnimationSet animationSet = anim.slideFadeAnimation(600, 0, 0, 0, 0, 1.0f, 0.0f);
-                                    animationSet.setAnimationListener(new Animation.AnimationListener() {
-                                        @Override
-                                        public void onAnimationStart(Animation animation) {
-
-                                        }
-
-                                        @Override
-                                        public void onAnimationEnd(Animation animation) {
-                                            containerCrearGrupo.setVisibility(View.GONE);
-                                            crearGrupo.setVisibility(View.GONE);
-                                            progressBar.setVisibility(View.GONE);
-                                            lottieAnimationView.setVisibility(View.VISIBLE);
-                                            lottieAnimationView.playAnimation();
-                                        }
-
-                                        @Override
-                                        public void onAnimationRepeat(Animation animation) {
-
-                                        }
-                                    });
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            NavController navController = Navigation.findNavController(root);
-                                            navController.navigate(R.id.nav_home);
-                                        }
-                                    }, 2600);
-                                    containerCrearGrupo.setAnimation(animationSet);
-                                    crearGrupo.setAnimation(animationSet);
-                                    progressBar.setAnimation(animationSet);
-                                }
-                            });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(root.getContext(), "Hubo un error al guardar la imagen", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            progressBar.setProgress((int) progress);
-                        }
+            ut = mStorageRef.child("avatar.jpg").putFile(contentURI);
+            ut.addOnSuccessListener((UploadTask.TaskSnapshot success)->{
+                Handler handler = new Handler();
+                handler.postDelayed(()->{
+                    progressBar.setProgress(0);
+                    progressBar.setVisibility(View.INVISIBLE);
+                }, 1000);
+                Toast.makeText(root.getContext(), "Grupo creado con exito!", Toast.LENGTH_SHORT).show();
+                success.getMetadata().getReference().getDownloadUrl().addOnSuccessListener((Uri uri) -> {
+                    ref.child(uniqueKey).child("avatar").setValue(uri.toString());
+                    onSuccessHandler(uniqueKey);
+                });
+            })
+                    .addOnFailureListener((@NonNull Exception e) -> Toast.makeText(root.getContext(), "Hubo un error al guardar la imagen", Toast.LENGTH_SHORT).show())
+                    .addOnProgressListener((@NonNull UploadTask.TaskSnapshot taskSnapshot) ->{
+                        progressBar.setVisibility(View.VISIBLE);
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        progressBar.setProgress((int) progress);
                     });
-        } else {
+        }else {
             ref.child(uniqueKey).child("avatar").setValue("https://firebasestorage.googleapis.com/v0/b/safe-team.appspot.com/o/default%2Fdefault.jpg?alt=media&token=1fea854c-a96d-46eb-b4e0-eac2eca3874a");
+            onSuccessHandler(uniqueKey);
         }
+
+
     }
 
     public void sendInvitation(String uniqueKey) {
@@ -381,5 +335,39 @@ public class CrearGrupoFragment extends Fragment {
             FirebaseDatabase.getInstance().getReference("USERS/" + u.getuId() + "/INVITACIONES/GRUPO/" + uniqueKey)
                     .setValue(ig);
         }
+    }
+
+    private void onSuccessHandler(String uniqueKey){
+        sendInvitation(uniqueKey);
+        AnimationSet animationSet = anim.slideFadeAnimation(600, 0, 0, 0, 0, 1.0f, 0.0f);
+        animationSet.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                containerCrearGrupo.setVisibility(View.GONE);
+                crearGrupo.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                lottieAnimationView.setVisibility(View.VISIBLE);
+                lottieAnimationView.playAnimation();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(()->{
+            NavController navController = Navigation.findNavController(root);
+            navController.navigate(R.id.nav_home);
+        }, 2600);
+        containerCrearGrupo.setAnimation(animationSet);
+        crearGrupo.setAnimation(animationSet);
+        progressBar.setAnimation(animationSet);
+
     }
 }
