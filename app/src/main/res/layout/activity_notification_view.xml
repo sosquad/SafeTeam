@@ -15,7 +15,8 @@
             android:id="@+id/notification_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:animateLayoutChanges="true"/>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

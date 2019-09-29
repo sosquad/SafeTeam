@@ -130,6 +130,11 @@ public class NotificationView extends AppCompatActivity {
                                             .child("estado").setValue(response);
                                     LinearLayout card = view.findViewById(R.id.info_card_invitation);
                                     LottieAnimationView cancel = view.findViewById(R.id.cancel_animation_invitation);
+                                    if(response == 2){
+                                        cancel.setAnimation("checkmark.json");
+                                        cancel.setScaleX(1);
+                                        cancel.setScaleY(1);
+                                    }
                                     card.setAnimation(getAnimation());
                                     cancel.setVisibility(View.VISIBLE);
                                     cancel.addAnimatorListener(new Animator.AnimatorListener() {
@@ -142,9 +147,7 @@ public class NotificationView extends AppCompatActivity {
                                         public void onAnimationEnd(Animator animation) {
                                             notificationContainer.removeView(view);
                                             FirebaseDatabase.getInstance().getReference("USERS/" + lu.getCurrentUserUid() + "/INVITACIONES/GRUPO/")
-                                                    .child(invitation.getIDGrupo()).removeValue(new DatabaseReference.CompletionListener() {
-                                                @Override
-                                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                                    .child(invitation.getIDGrupo()).removeValue((@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference)->{
                                                     if (response == 2) {
                                                         createReferenceToGroup(invitation, grupo);
                                                         Toast.makeText(NotificationView.this, "Invitación a " + grupo.getNombre() + " aceptada!", Toast.LENGTH_LONG).show();
@@ -158,7 +161,6 @@ public class NotificationView extends AppCompatActivity {
                                                     if (invitaciones.size() == 0) {
                                                         finish();
                                                     }
-                                                }
                                             });
                                         }
 
