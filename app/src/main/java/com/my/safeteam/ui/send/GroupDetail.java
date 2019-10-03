@@ -181,6 +181,7 @@ public class GroupDetail extends Fragment {
         editContextoGrupo.setVisibility(View.VISIBLE);
 
         cancelChanges.setOnClickListener((View view) -> closeEditarGrupo());
+        applyChanges.setOnClickListener((View view) -> applyChanges());
     }
 
     private void closeEditarGrupo() {
@@ -191,31 +192,50 @@ public class GroupDetail extends Fragment {
         containerEditButtons.setVisibility(View.GONE);
     }
 
+    private void applyChanges(){
+        String urlGrupo = "USERS/"+grupo.getLider().getuId()+"/GRUPOS/"+grupo.getuId();
+        if(!editContextoGrupo.getText().toString().equals(grouporganization.getText().toString())){
+            FirebaseDatabase.getInstance().getReference(urlGrupo)
+                    .child("contexto").setValue(editContextoGrupo.getText().toString());
+            grouporganization.setText(editContextoGrupo.getText().toString());
+        }
+        if(!editNombreGrupo.getText().toString().equals(groupname.getText().toString())){
+            FirebaseDatabase.getInstance().getReference(urlGrupo)
+                    .child("nombre").setValue(editNombreGrupo.getText().toString());
+            groupname.setText(editNombreGrupo.getText().toString());
+        }
+
+        closeEditarGrupo();
+
+    }
+
     private void borrarGrupo(View v) {
         String referencia = "USERS/"+grupo.getLider().getuId()+"/GRUPOS/"+grupo.getuId();
-        for(BasicUser g : grupo.getUsuariosEnGrupo()){
-            if(g.getEstado() == 2) {
-                FirebaseDatabase.getInstance().getReference("USERS/" + g.getuId() + "/PARTICIPANTE")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    if (data.getValue(ReferenciaAlGrupo.class).getUrlGrupo().equals(referencia)) {
-                                        FirebaseDatabase.getInstance().getReference("USERS/" + g.getuId() + "/PARTICIPANTE/" + data.getKey()).removeValue();
+        if(grupo.getUsuariosEnGrupo() != null) {
+            for (BasicUser g : grupo.getUsuariosEnGrupo()) {
+                if (g.getEstado() == 2) {
+                    FirebaseDatabase.getInstance().getReference("USERS/" + g.getuId() + "/PARTICIPANTE")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        if (data.getValue(ReferenciaAlGrupo.class).getUrlGrupo().equals(referencia)) {
+                                            FirebaseDatabase.getInstance().getReference("USERS/" + g.getuId() + "/PARTICIPANTE/" + data.getKey()).removeValue();
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
-            }else if(g.getEstado() == 1){
-                FirebaseDatabase.getInstance().getReference("USERS/" + g.getuId() + "/INVITACIONES/GRUPO/"+grupo.getuId())
-                        .removeValue();
+                                }
+                            });
+                } else if (g.getEstado() == 1) {
+                    FirebaseDatabase.getInstance().getReference("USERS/" + g.getuId() + "/INVITACIONES/GRUPO/" + grupo.getuId())
+                            .removeValue();
+                }
+
             }
-
         }
         FirebaseDatabase.getInstance().getReference("USERS/"+lu.getCurrentUserUid()+"/GRUPOS/"+grupo.getuId())
                 .removeValue((@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) -> {
