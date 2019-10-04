@@ -103,9 +103,7 @@ public class CrearGrupoFragment extends Fragment {
         progressBar = root.findViewById(R.id.progressBar);
 
         crearGrupo = root.findViewById(R.id.crear_grupo);
-        crearGrupo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        crearGrupo.setOnClickListener((View v) -> {
                 if (agregarNombre.getText().toString().equals("")) {
                     Toast.makeText(root.getContext(), "Debes agregar un nombre al grupo!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -114,20 +112,13 @@ public class CrearGrupoFragment extends Fragment {
                                 .setIcon(R.drawable.ic_sms_failed)
                                 .setTitle("Nombre organización")
                                 .setMessage("¿Desea continuar sin ingresar un nombre a su organización?")
-                                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        crearGrupo();
-                                    }
-
-                                })
+                                .setPositiveButton("Si", (DialogInterface dialog, int which) -> crearGrupo())
                                 .setNegativeButton("No", null)
                                 .show();
                     } else {
                         crearGrupo();
                     }
                 }
-            }
         });
         return root;
     }
@@ -196,12 +187,7 @@ public class CrearGrupoFragment extends Fragment {
         container = root.findViewById(R.id.personas_grupo);
         if (user != null) {
             final LinearLayout clickeableColumn = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
-            clickeableColumn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onClickClickeableColumn(thumbUser, clickeableColumn);
-                }
-            });
+            clickeableColumn.setOnClickListener((View view) -> onClickClickeableColumn(thumbUser, clickeableColumn));
             ImageView selectedUserPhoto = clickeableColumn.findViewById(R.id.member_avatar_selected);
             TextView userName = clickeableColumn.findViewById(R.id.member_name_selected);
             TextView userEmail = clickeableColumn.findViewById(R.id.member_email_selected);

@@ -1,6 +1,9 @@
 package com.my.safeteam.ui.send;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -33,14 +36,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.my.safeteam.DB.BasicUser;
 import com.my.safeteam.DB.Grupo;
+import com.my.safeteam.DB.InvitacionGrupo;
 import com.my.safeteam.DB.ReferenciaAlGrupo;
+import com.my.safeteam.DB.User;
 import com.my.safeteam.R;
 import com.my.safeteam.globals.LogedUser;
 import com.my.safeteam.utils.MySnackBar;
+import com.my.safeteam.utils.SearchLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class GroupDetail extends Fragment {
     private MySnackBar SB = new MySnackBar();
@@ -55,12 +62,16 @@ public class GroupDetail extends Fragment {
     FloatingActionMenu dynamic_fab;
     LogedUser lu = LogedUser.getInstance();
     LayoutInflater inflater;
-    Button addMeet;
+    Button addMeet, addPeople;
+    private final int SEARCH_USERS = 3;
+    private List<BasicUser> usersInGroup = new ArrayList<>();
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_group_detail, container, false);
         dynamic_fab = root.findViewById(R.id.fab_dynamic);
         addMeet = root.findViewById(R.id.add_meet_btn);
+        addPeople = root.findViewById(R.id.btn_group_detail_add_people);
         userinvitedcontainer = root.findViewById(R.id.invited_people);
         applyChanges = root.findViewById(R.id.edit_apply_option);
         cancelChanges = root.findViewById(R.id.edit_discard_option);
@@ -87,7 +98,12 @@ public class GroupDetail extends Fragment {
         grouporganization.setText(grupo.getContexto());
         LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         addLeaderToList(inflater, grupo.getLider());
-        if (grupo.getUsuariosEnGrupo() != null) {
+        usersInGroup = grupo.getUsuariosEnGrupo();
+        updateUserList();
+    }
+    private void updateUserList(){
+        userinvitedcontainer.removeAllViews();
+        if (usersInGroup != null) {
             if (grupo.getUsuariosEnGrupo().size() > 0) {
                 for (BasicUser user : grupo.getUsuariosEnGrupo()) {
                     final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
@@ -101,12 +117,12 @@ public class GroupDetail extends Fragment {
                     } else {
                         setStatus(user.getEstado(), user, invitedUserEmail, invitedUserName);
                     }
+                    userInvited.setTag(user.getuId());
                     userinvitedcontainer.addView(userInvited);
                 }
             }
         }
     }
-
     private void addLeaderToList(LayoutInflater inflater, BasicUser lider) {
         final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
         ImageView invitedUserAvatar = userInvited.findViewById(R.id.member_avatar_selected);
@@ -135,6 +151,7 @@ public class GroupDetail extends Fragment {
     private void settingFAB() {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (grupo.getLider().getuId().equals(lu.getCurrentUserUid())) {
+            addPeople.setVisibility(View.VISIBLE);
             addMeet.setVisibility(View.VISIBLE);
             FloatingActionButton botonDelete = (FloatingActionButton) inflater.inflate(R.layout.item_fab, null);
             FloatingActionButton botonEdit = (FloatingActionButton) inflater.inflate(R.layout.item_fab, null);
@@ -158,6 +175,87 @@ public class GroupDetail extends Fragment {
         } else {
             dynamic_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_email));
             dynamic_fab.setOnClickListener((View v)-> SB.snackBar("¿Quieres contactar al lider?", v, "Contactar",null));
+        }
+
+        addPeople.setOnClickListener((View v) -> {
+            openAddMember();
+        });
+    }
+
+    private void openAddMember() {
+        Intent searchLayout = new Intent(root.getContext(), SearchLayout.class);
+        startActivityForResult(searchLayout, SEARCH_USERS);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SEARCH_USERS) {
+            if (resultCode == 1) {
+                List<String> ids = new ArrayList<>();
+                for(BasicUser users : usersInGroup){
+                    ids.add(users.getuId());
+                }
+                if (data.getExtras().get("selectedUser") != null) {
+                    User incomingUser = (User) data.getExtras().get("selectedUser");
+                    if (!ids.contains(incomingUser.getuId())) {
+                        new AlertDialog.Builder(root.getContext())
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Agregar a grupo")
+                                .setMessage("¿Desea incluir a " + incomingUser.getEmail() + " en el grupo?")
+                                .setPositiveButton("Si", (DialogInterface dialog, int which) -> {
+                                    System.out.println("INCOMING USER : " + incomingUser);
+                                    addWithoutRepeat(incomingUser);
+                                })
+                                .setNegativeButton("No", null)
+                                .show();
+                    }
+                }else{
+                    Toast.makeText(root.getContext(), "Usuario elegido ya pertenece al grupo!",Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void addWithoutRepeat(User user) {
+        boolean found = false;
+        if (user.getuId().equals(lu.getUser().getuId())) {
+            found = true;
+            Toast.makeText(root.getContext(), "Eres el lider de este grupo ! ", Toast.LENGTH_SHORT).show();
+
+        } else {
+            for (BasicUser inlist : usersInGroup) {
+                if (inlist.getuId().equals(user.getuId())) {
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            usersInGroup.add(new BasicUser(user.getuId(),user.getName(),user.getPhotoUri(),user.getEmail(),1));
+            final String pathToGroup = "USERS/"+grupo.getLider().getuId()+"/GRUPOS/"+grupo.getuId()+"/usuariosEnGrupo";
+            FirebaseDatabase.getInstance()
+                    .getReference(pathToGroup)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            FirebaseDatabase.getInstance()
+                                    .getReference(pathToGroup)
+                                    .child(Long.toString(dataSnapshot.getChildrenCount()))
+                                    .setValue(new BasicUser(user.getuId(),user.getName(),user.getPhotoUri(),user.getEmail(),1));
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+            updateUserList();
+            FirebaseDatabase.getInstance().getReference("USERS/"+user.getuId()+"/INVITACIONES/GRUPO")
+                    .push()
+                    .setValue(new InvitacionGrupo(grupo.getuId(),grupo.getLider().getuId(),false,false,System.currentTimeMillis()));
+            Toast.makeText(root.getContext(), "Se ha enviado un mensaje a " + user.getEmail() + "!", Toast.LENGTH_SHORT).show();
         }
     }
 
