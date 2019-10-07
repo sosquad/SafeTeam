@@ -26,7 +26,7 @@ public class PantallaBienvenida extends AppCompatActivity {
                         login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(login);
                     }
-                }, 3000
+                }, 2200
         );
 
     }

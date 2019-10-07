@@ -197,9 +197,10 @@
                     android:id="@+id/btn_group_detail_add_people"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:visibility="invisible"
-                    android:background="@drawable/ic_personadd"
-                    android:backgroundTint="@color/places_text_black_alpha_87" />
+                    android:background="@drawable/boton1"
+                    android:backgroundTint="@color/places_text_black_alpha_87"
+                    android:drawableLeft="@drawable/ic_personadd"
+                    android:visibility="invisible" />
             </LinearLayout>
 
             <ScrollView
