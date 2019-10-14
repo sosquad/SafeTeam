@@ -97,13 +97,17 @@ public class GroupDetail extends Fragment {
         groupname.setText(grupo.getNombre());
         grouporganization.setText(grupo.getContexto());
         LayoutInflater inflater = (LayoutInflater) root.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        addLeaderToList(inflater, grupo.getLider());
-        usersInGroup = grupo.getUsuariosEnGrupo();
+        if(grupo.getUsuariosEnGrupo() != null) {
+            usersInGroup = grupo.getUsuariosEnGrupo();
+        }else{
+            usersInGroup = new ArrayList<>();
+        }
         updateUserList();
     }
     private void updateUserList(){
         userinvitedcontainer.removeAllViews();
-        if (usersInGroup != null) {
+        addLeaderToList(inflater, grupo.getLider());
+        if (grupo.getUsuariosEnGrupo() != null) {
             if (grupo.getUsuariosEnGrupo().size() > 0) {
                 for (BasicUser user : grupo.getUsuariosEnGrupo()) {
                     final LinearLayout userInvited = (LinearLayout) inflater.inflate(R.layout.user_selected_team, null);
